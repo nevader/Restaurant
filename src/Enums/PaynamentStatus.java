@@ -1,0 +1,5 @@
+package Enums;
+
+public enum PaynamentStatus {
+    UNPAID, PENDING, COMPLETED, FILLED, DECLINED, CANCELLED, ABANDONED, SETTLING, SETTLED, REFUNDED
+}
