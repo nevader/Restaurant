@@ -1,3 +1,4 @@
+/*
 package Restauracja;
 
 import java.util.ArrayList;
@@ -11,4 +12,4 @@ public class Restaurant {
         this.name = "Cluckin' Bell";
         this.branches = branches;
     }
-}
+}*/

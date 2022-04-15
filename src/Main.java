@@ -2,11 +2,13 @@ public class Main {
 
     public static void main(String[] args) {
 
+        StartMenu startMenu = new StartMenu();
+        StartMenu.menu.addDefaultItems();
 
-        Konsola konsola = new Konsola();
-        konsola.ekranPowitalny();
+        startMenu.ekranPowitalny();
+
+
 
     }
-
 
 }
