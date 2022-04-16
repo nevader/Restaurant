@@ -1,5 +1,6 @@
 package Units;
 
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MenuItem {
@@ -11,10 +12,9 @@ public class MenuItem {
     private String category;
     private double price;
 
-    public MenuItem() {}
-
     public MenuItem(String name, String description, String category, double price) {
-        this.name = name;
+
+        this.name = Objects.requireNonNull(name, "no empty");
         this.description = description;
         this.category = category;
         this.price = price;

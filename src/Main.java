@@ -1,11 +1,18 @@
+import Control.Control;
+import Units.Menu;
+
 public class Main {
 
     public static void main(String[] args) {
 
-        StartMenu startMenu = new StartMenu();
-        StartMenu.menu.addDefaultItems();
+        Control control = new Control();
 
-        startMenu.ekranPowitalny();
+        control.ekranPowitalny();
+
+
+
+
+
 
 
 

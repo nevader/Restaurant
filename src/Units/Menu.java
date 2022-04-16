@@ -1,9 +1,7 @@
 package Units;
 
-
 import Enums.Categories;
 import Enums.Meals;
-
 import java.util.ArrayList;
 
 public class Menu {
@@ -20,6 +18,7 @@ public class Menu {
     * <String> categoryList
     *
     * */
+
     public Menu() {
         itemList = new ArrayList<>();
         categoryList = new ArrayList<>();
@@ -39,6 +38,17 @@ public class Menu {
         return categoryList;
     }
 
+    /*Zwraca kategorie pod podanym indexem*/
+    public String getCategoryIndex (int index) {
+        String error = "Podaj poprawna liczbe!";
+
+        for (int i = 0; i < categoryList.size(); i++) {
+            if (i == index-1)
+                return categoryList.get(i);
+        }
+        return error;
+    }
+
     /*Dodaje nowa kategorie do listy*/
     public void addCategory(String name) {
         categoryList.add(name.toUpperCase());
@@ -46,9 +56,11 @@ public class Menu {
 
     /*Wyswietla na ekranie wszystkie dostepne kategorie*/
     public void printCategories() {
-        System.out.println("Kategorie do wyboru: ");
+        System.out.print("   Kategorie do wyboru: \n");
         for (int i = 0; i < categoryList.size(); i++) {
-            System.out.println((i + 1) + "." + categoryList.get(i));
+            if (i%2 == 0)
+                System.out.println("");
+            System.out.print("#" + (i + 1) + ". " + categoryList.get(i) + "\t\t");
         }
     }
 
@@ -82,7 +94,7 @@ public class Menu {
 
     /*Usuwa wybrane danie z listy po podaniu jego ID*/
     public void removeItem (int id) {
-            itemList.removeIf(n -> (n.getMenuItemID() == id));
+        itemList.removeIf(n -> (n.getMenuItemID() == id));
     }
 
 
@@ -125,13 +137,6 @@ public class Menu {
         }
 
         }
-
-    public static class a{
-        public static void main(String[] args) {
-            Menu menu = new Menu();
-            menu.printMenuItems();
-        }
-    }
 
 }
 
