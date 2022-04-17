@@ -1,14 +1,15 @@
-import Control.Control;
-import Units.Menu;
+import Control.StartInterface;
+
+import static Control.StartInterface.menu;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        Control control = new Control();
+        StartInterface startInterface = new StartInterface();
 
-        control.ekranPowitalny();
-
+        menu.addDefaultItems();
+        startInterface.ekranPowitalny();
 
 
 

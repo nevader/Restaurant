@@ -3,6 +3,7 @@ package Units;
 import Enums.Categories;
 import Enums.Meals;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Menu {
 
@@ -93,8 +94,23 @@ public class Menu {
     public void editItem() {}
 
     /*Usuwa wybrane danie z listy po podaniu jego ID*/
-    public void removeItem (int id) {
-        itemList.removeIf(n -> (n.getMenuItemID() == id));
+    public boolean removeItem (int id) {
+
+        String itemName = "";
+
+        for (int i = 0; i < itemList.size(); i++) {
+            if (itemList.get(i).getMenuItemID() == id) {
+                itemName = itemList.get(i).getName();
+            }
+        }
+
+        if (itemList.removeIf(menuItem -> menuItem.getMenuItemID() == id)) {
+            System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+            System.out.println("\nUsunałes:\n" + "#" + id + " | " + itemName + "\n");
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
@@ -104,11 +120,13 @@ public class Menu {
 
     /*Wyswietla na ekranie wszystkie dostepne dania*/
     public void printMenuItems() {
-        System.out.println("Wszystkie pozycje w menu:");
+        System.out.println("\n"+
+                ".----------------------------------.\n" +
+                "| Wszystkie dostępne dania w menu: |\n" +
+                "'----------------------------------'");
 
         for (int i = 0; i < itemList.size(); i++) {
-            System.out.println("ID: #" + itemList.get(i).getMenuItemID() + " -- " +
-                    itemList.get(i).getName());
+            System.out.println("#" + itemList.get(i).getMenuItemID() + " | " + itemList.get(i).getName());
         }
 
     }

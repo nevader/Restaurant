@@ -1,15 +1,71 @@
 package Control;
 
+import Units.Menu;
+
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class MenagerControl {
+public abstract class UserInterface {
 
+    public boolean flag;
+    public int userChoice;
+    public Menu menu = StartInterface.menu;
+
+    public int userInput (String msg) {
+
+        int userChoice = 0;
+        boolean isValidOption = false;
+        Scanner in = new Scanner(System.in);
+
+        do {
+            System.out.print(msg);
+            try{
+                userChoice = in.nextInt();
+                isValidOption = true;
+            }catch(InputMismatchException e){
+                in.next(); //need to consume the invalid token to avoid an infinite loop
+                System.out.println("Podaj właściwą liczbe");
+            }
+        } while (!isValidOption);
+        return userChoice;
+    }
+    public void exit() {
+        System.exit(0);
+    }
+    public void wybierzPoprawna() {
+        System.out.println("\nWybierz poprawną");
+    }
+    public void pressAnyKeyToContinue()
+    {
+        System.out.println("\nNacisnij Enter, aby kontynuowac.");
+        try
+        {
+            System.in.read();
+        }
+        catch(Exception e)
+        {}
+    }
+
+
+
+    /*ASCII stuff*/
     public void spacing() {
         System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
     }
 
-    public void menager() {
+    public void _logo() {
+        System.out.println("\n\n"+"                                                                                \n" +
+                "  ▄▄█▀▀▀█▄█  ██                      ██         ██           ██       ▀███▀▀▀██▄          ██    ██  \n" +
+                "▄██▀     ▀█  ██                      ██                      ▀▀        ██    ██           ██    ██  \n" +
+                "██▀       ▀  ██   ██    ██  ▄██▀██   ██  ▄██▀  ███   ███████▄          ██    ██  ▄▄█▀██   ██    ██  \n" +
+                "██           ██   ██    ██ ██▀  ██   ██ ▄█      ██   ██    ██          ██▀▀▀█▄▄▄ █▀   ██  ██    ██  \n" +
+                "██▄          ██   ██    ██ ██        ██▄██      ██   ██    ██          ██    ▀██ █▀▀▀▀▀▀  ██    ██  \n" +
+                "▀██▄     ▄▀  ██   ██    ██ ██▄       ██  ▀██▄   ██   ██    ██          ██    ▄██ █▄    ▄  ██    ██  \n" +
+                "  ▀▀█████▀ ▄████▄ ▀████▀██ ▄█████▀   ████▄  ██▄ ████ ███  ████▄      ▄██████████ ▀█████▀▄████▄▄████▄\n" +
+                "                                                                                                 " +
+                "                                                                                                 ");
+    }
+    public void _manager() {
         spacing();
         System.out.println(
                 "███╗░░░███╗███████╗███╗░░██╗░█████╗░░██████╗░███████╗██████╗░\n" +
@@ -19,8 +75,7 @@ public class MenagerControl {
                         "██║░╚═╝░██║███████╗██║░╚███║██║░░██║╚██████╔╝███████╗██║░░██║\n" +
                         "╚═╝░░░░░╚═╝╚══════╝╚═╝░░╚══╝╚═╝░░╚═╝░╚═════╝░╚══════╝╚═╝░░╚═╝");
     }
-
-    public void menu() {
+    public void _menu() {
         spacing();
         System.out.println(
                 "███╗░░░███╗███████╗███╗░░██╗██╗░░░██╗\n" +
@@ -30,8 +85,7 @@ public class MenagerControl {
                         "██║░╚═╝░██║███████╗██║░╚███║╚██████╔╝\n" +
                         "╚═╝░░░░░╚═╝╚══════╝╚═╝░░╚══╝░╚═════╝░");
     }
-
-    public void dania() {
+    public void _dania() {
         spacing();
         System.out.println(
                 "██████╗░░█████╗░███╗░░██╗██╗░█████╗░\n" +
@@ -41,8 +95,17 @@ public class MenagerControl {
                         "██████╔╝██║░░██║██║░╚███║██║██║░░██║\n" +
                         "╚═════╝░╚═╝░░╚═╝╚═╝░░╚══╝╚═╝╚═╝░░╚═╝");
     }
-
-    public void noweDanie() {
+    public void _usunDanie() {
+        spacing();
+        System.out.println("\n" +
+                "██╗░░░██╗░██████╗██╗░░░██╗███╗░░██╗  ██████╗░░█████╗░███╗░░██╗██╗███████╗\n" +
+                "██║░░░██║██╔════╝██║░░░██║████╗░██║  ██╔══██╗██╔══██╗████╗░██║██║██╔════╝\n" +
+                "██║░░░██║╚█████╗░██║░░░██║██╔██╗██║  ██║░░██║███████║██╔██╗██║██║█████╗░░\n" +
+                "██║░░░██║░╚═══██╗██║░░░██║██║╚████║  ██║░░██║██╔══██║██║╚████║██║██╔══╝░░\n" +
+                "╚██████╔╝██████╔╝╚██████╔╝██║░╚███║  ██████╔╝██║░░██║██║░╚███║██║███████╗\n" +
+                "░╚═════╝░╚═════╝░░╚═════╝░╚═╝░░╚══╝  ╚═════╝░╚═╝░░╚═╝╚═╝░░╚══╝╚═╝╚══════╝");
+    }
+    public void _noweDanie() {
         spacing();
         System.out.println(
                 "███╗░░██╗░█████╗░░██╗░░░░░░░██╗███████╗  ██████╗░░█████╗░███╗░░██╗██╗███████╗\n" +
@@ -52,8 +115,7 @@ public class MenagerControl {
                         "██║░╚███║╚█████╔╝░░╚██╔╝░╚██╔╝░███████╗  ██████╔╝██║░░██║██║░╚███║██║███████╗\n" +
                         "╚═╝░░╚══╝░╚════╝░░░░╚═╝░░░╚═╝░░╚══════╝  ╚═════╝░╚═╝░░╚═╝╚═╝░░╚══╝╚═╝╚══════╝");
     }
-
-    public void nowakategoria() {
+    public void _nowakategoria() {
         spacing();
         System.out.println(
                 "███╗░░██╗░█████╗░░██╗░░░░░░░██╗░█████╗░  ██╗░░██╗░█████╗░████████╗███████╗░██████╗░░█████╗░██████╗░██╗░█████╗░\n" +
@@ -64,138 +126,6 @@ public class MenagerControl {
                         "╚═╝░░╚══╝░╚════╝░░░░╚═╝░░░╚═╝░░╚═╝░░╚═╝  ╚═╝░░╚═╝╚═╝░░╚═╝░░░╚═╝░░░╚══════╝░╚═════╝░░╚════╝░╚═╝░░╚═╝╚═╝╚═╝░░╚═╝");
     }
 
-    public void addItem() {
-
-        Scanner in = new Scanner(System.in);
-
-        noweDanie();
-        System.out.println(
-                ".---------------------------.\n" +
-                        "| Wpisz nazwę nowego dania: |\n" +
-                        "'---------------------------'");
-
-        String name = in.nextLine();
-
-        noweDanie();
-        System.out.println("\n" +
-                ".-------------------.\n" +
-                "| Wpisz opis dania: |\n" +
-                "'-------------------'");
-
-        String desc = in.nextLine();
 
 
-        boolean isValidOption = false;
-        double cena = 0;
-
-        do {
-            noweDanie();
-            System.out.println(
-                    "\n" +
-                            ".-------------------.\n" +
-                            "| Wpisz cene dania: |\n" +
-                            "'-------------------'");
-            System.out.println("Podaj cene w formacie 'xx,xx' np. 1,42");
-            try {
-                cena = in.nextDouble();
-                isValidOption = true;
-            } catch (InputMismatchException e) {
-                in.next(); //need to consume the invalid token to avoid an infinite loop
-            }
-        } while (!isValidOption);
-
-        noweDanie();
-        System.out.println();
-
-        Control.menu.printCategories();
-
-
-        noweDanie();
-        System.out.println("\n" +
-                ".------------------------------------------------.\n" +
-                "| Przypisz danie do jednej z podanych kategorii, |\n" +
-                "|            lub utworz nowa kategorie.          |\n" +
-                "'------------------------------------------------'");
-        System.out.println(
-                ".-----------------------------------------------.\n" +
-                        "| Wpisz numer odpowiadajacy wybranej kategorii. |\n" +
-                        "|       Jezeli chcesz dodac nowa wpisz '0'      |\n" +
-                        "'-----------------------------------------------'");
-        Control.menu.printCategories();
-        System.out.println("\n\n#0. DODAJ NOWĄ");
-
-        isValidOption = false;
-        int kategoriaInt = 0;
-
-        do {
-            try {
-                kategoriaInt = in.nextInt();
-                isValidOption = true;
-            } catch (InputMismatchException e) {
-                in.next(); //need to consume the invalid token to avoid an infinite loop
-            }
-        } while (!isValidOption);
-
-        String newKategory = "";
-
-        if (kategoriaInt == 0) {
-
-            nowakategoria();
-
-            System.out.println("\n" +
-                    ".------------------------------.\n" +
-                    "| Wpisz nazwe nowej kategorii: |\n" +
-                    "'------------------------------'");
-            in.nextLine();
-
-            newKategory = in.nextLine();
-
-            Control.menu.addCategory(newKategory);
-
-
-        } else {
-            boolean flag = false;
-
-            do {
-                if (kategoriaInt > Control.menu.getCategoryList().size() + 1 ||
-                        kategoriaInt < 1) {
-                    System.out.println("Wybierz poprawna kategorie");
-                } else {
-                    newKategory = Control.menu.getCategoryIndex(kategoriaInt);
-                    flag = true;
-                }
-            } while (!flag);
-        }
-
-        Control.menu.addItem(name, desc, newKategory, cena);
-        noweDanie();
-        System.out.println("\n" +
-                ".------------------------------------.\n" +
-                "| Nowe danie zostało dodane do menu: |\n" +
-                "'------------------------------------'");
-        System.out.println(newKategory + " - " + name + ", $" + cena + "\n" + desc + "\n");
-
-        System.out.println("\n" +
-                ".---------------------.\n" +
-                "| 1. Dodaj nowe danie |\n"  +
-                "| 0. Wróc             |\n" +
-                "'---------------------'\n");
-
-        do {
-            Control.userInput("");
-            switch (Control.wybor) {
-                case 1:
-                    addItem();
-                    Control.setWyborToZero();
-                    break;
-                case 0:
-                    Control.setWyborToZero();
-                    break;
-                default:
-                    Control.wybierzPoprawna();
-                    break;
-            }
-        } while (Control.wybor != 0);
-
-    }
 }
