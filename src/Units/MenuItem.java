@@ -21,6 +21,7 @@ public class MenuItem {
         id = menuItemID.incrementAndGet();
     }
 
+
     public int getMenuItemID() {
         return id;
     }
@@ -35,6 +36,10 @@ public class MenuItem {
     }
     public double getPrice() {
         return price;
+    }
+
+    public void setId() {
+        this.id = menuItemID.incrementAndGet();
     }
 
     public void setName(String name) {

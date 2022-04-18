@@ -15,7 +15,7 @@ public class Manager extends UserInterface {
         boolean isValidOption = false;
 
         _noweDanie();
-        System.out.println(
+        System.out.println("\n" +
                 ".---------------------------.\n" +
                         "| Wpisz nazwę nowego dania: |\n" +
                         "'---------------------------'\n");
@@ -24,11 +24,12 @@ public class Manager extends UserInterface {
 
 
         _noweDanie();
-        System.out.println("\n" +
+        System.out.println("\nNazwa dania: " + name + "\n\n" +
                 ".-------------------.\n" +
                 "| Wpisz opis dania: |\n" +
-                "'-------------------'");
+                "'-------------------'\n");
 
+        System.out.print("#");
         String desc = in.nextLine();
 
 
@@ -37,12 +38,13 @@ public class Manager extends UserInterface {
 
         do {
             _noweDanie();
-            System.out.println(
+            System.out.println("\nNazwa dania: " + name + "\n" +
+                    "Opis dania: " + desc + "\n" +
                     "\n" +
-                            ".-------------------.\n" +
-                            "| Wpisz cene dania: |\n" +
-                            "'-------------------'");
-            System.out.println("Podaj cene w formacie 'xx,xx' np. 1,42");
+                            ".----------------------------------------.\n" +
+                            "| Podaj cene w formacie 'xx,xx' np. 1,42 |\n" +
+                            "'----------------------------------------'\n");
+            System.out.print("#");
             try {
                 cena = in.nextDouble();
                 isValidOption = true;
@@ -51,24 +53,18 @@ public class Manager extends UserInterface {
             }
         } while (!isValidOption);
 
-        _noweDanie();
-        System.out.println();
-
 
 
         _noweDanie();
-        System.out.println("\n" +
+        System.out.print("\nNazwa dania: " + name + "\n" +
+                "Opis dania: " + desc + "\n" + "Cena dania: $" + cena + "\n\n" +
                 ".------------------------------------------------.\n" +
                 "| Przypisz danie do jednej z podanych kategorii, |\n" +
                 "|            lub utworz nowa kategorie.          |\n" +
-                "'------------------------------------------------'");
-        System.out.println(
-                ".-----------------------------------------------.\n" +
-                        "| Wpisz numer odpowiadajacy wybranej kategorii. |\n" +
-                        "|       Jezeli chcesz dodac nowa wpisz '0'      |\n" +
-                        "'-----------------------------------------------'");
+                "'------------------------------------------------'\n");
         menu.printCategories();
-        System.out.println("\n\n#0. DODAJ NOWĄ");
+        System.out.println("\n#0. DODAJ NOWĄ\n");
+        System.out.print("#");
 
         isValidOption = false;
         int kategoriaInt = 0;
@@ -91,7 +87,8 @@ public class Manager extends UserInterface {
             System.out.println("\n" +
                     ".------------------------------.\n" +
                     "| Wpisz nazwe nowej kategorii: |\n" +
-                    "'------------------------------'");
+                    "'------------------------------'\n");
+            System.out.print("#");
             in.nextLine();
 
             newKategory = in.nextLine();
@@ -115,13 +112,16 @@ public class Manager extends UserInterface {
 
         menu.addItem(name, desc, newKategory, cena);
         _noweDanie();
-        System.out.println("\n" +
+        System.out.print("\n" +
                 ".------------------------------------.\n" +
                 "| Nowe danie zostało dodane do menu: |\n" +
-                "'------------------------------------'");
-        System.out.println(newKategory + " - " + name + ", $" + cena + "\n" + desc + "\n");
+                "'------------------------------------'\n");
 
-        System.out.println("\n" +
+        System.out.println("\nNazwa dania: " + name + "\n" +
+                "Opis dania: " + desc + "\n" + "Cena dania: $" + cena + "\n" +
+                "Kategoria dania: " + newKategory + "\n");
+
+        System.out.println(
                 ".---------------------.\n" +
                 "| #1 Dodaj nowe danie |\n"  +
                 "| #0 Wróc             |\n" +
@@ -150,15 +150,15 @@ public class Manager extends UserInterface {
 
         _usunDanie();
 
-        System.out.print(
+        System.out.print("\n" +
                 ".--------------------------------------------.\n" +
                 "|      Wybierz danie ktore chcesz usunąć.    |\n" +
                 "| Wpisz liczbę która jest do niego przypisan |\n" +
                 "'--------------------------------------------'");
         menu.printMenuItems();
-        System.out.print("#0 Cofnij");
+        System.out.print("#0 Cofnij\n");
 
-        userChoice = userInput("\n#");
+        userChoice = userInput("\nWybierz opcje: \n#");
 
         if (userChoice == 0) {
             return;
@@ -171,10 +171,10 @@ public class Manager extends UserInterface {
                     ".-----------------------.\n" +
                     "| #1 Usun kolejne danie |\n" +
                     "| #0 Cofnij             |\n" +
-                    "'-----------------------'");
+                    "'-----------------------'\n");
 
             do {
-                userChoice = userInput("#");
+                userChoice = userInput("Wybierz opcje: \n#");
                 switch (userChoice) {
                     case 1:
                         flag = true;

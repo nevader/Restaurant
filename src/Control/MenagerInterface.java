@@ -2,6 +2,8 @@ package Control;
 
 import Personel.Manager;
 
+import java.io.IOException;
+
 
 public class MenagerInterface extends UserInterface{
 
@@ -57,6 +59,7 @@ public class MenagerInterface extends UserInterface{
                 ".--------------------------.\n" +
                 "| #1 Zarzadzaj daniami     |\n" +
                 "| #2 Zarzadzaj kategoriami |\n" +
+                "| #3 Wyswietl menu         |\n" +
                 "| #0 Cofnij                |\n" +
                 "'--------------------------'\n");
 
@@ -69,6 +72,11 @@ public class MenagerInterface extends UserInterface{
                     zarzadzajDaniami();
                     break;
                 case 2:
+                    break;
+                case 3:
+                    menu.printMenu();
+                    pressAnyKeyToContinue();
+                    zarzadzajMenu();
                     break;
                 case 0:
                     flag = true;
@@ -87,7 +95,9 @@ public class MenagerInterface extends UserInterface{
                 ".----------------------------------.\n" +
                 "| #1 Dodaj nowe danie              |\n" +
                 "| #2 Usun danie                    |\n" +
-                "| #3 Wyswietl liste wszystkich dan |\n" +
+                "| #3 Zapisz menu w pliku           |\n" +
+                "| #4 Wczytaj menu z pliku          |\n" +
+                "| #5 Wyswietl liste wszystkich dań |\n" +
                 "| #0 Cofnij                        |\n" +
                 "'----------------------------------'\n");
 
@@ -105,11 +115,17 @@ public class MenagerInterface extends UserInterface{
                     zarzadzajDaniami();
                     break;
                 case 3:
+                    menu.saveMenuItemsToFile();
+                    zarzadzajDaniami();
+                    break;
+                case 4:
+                    menu.loadMenuItemsFromFile();
+                    break;
+                case 5:
                     _dania();
                     menu.printMenuItems();
                     pressAnyKeyToContinue();
                     zarzadzajDaniami();
-                    break;
                 case 0:
                     flag = true;
                     zarzadzajMenu();

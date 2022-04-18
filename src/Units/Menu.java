@@ -2,8 +2,12 @@ package Units;
 
 import Enums.Categories;
 import Enums.Meals;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class Menu {
 
@@ -57,10 +61,10 @@ public class Menu {
 
     /*Wyswietla na ekranie wszystkie dostepne kategorie*/
     public void printCategories() {
-        System.out.print("   Kategorie do wyboru: \n");
         for (int i = 0; i < categoryList.size(); i++) {
             if (i%2 == 0)
                 System.out.println("");
+
             System.out.print("#" + (i + 1) + ". " + categoryList.get(i) + "\t\t");
         }
     }
@@ -106,7 +110,20 @@ public class Menu {
 
         if (itemList.removeIf(menuItem -> menuItem.getMenuItemID() == id)) {
             System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+            System.out.println("\n" +
+                    "██╗░░░██╗░██████╗██╗░░░██╗███╗░░██╗  ██████╗░░█████╗░███╗░░██╗██╗███████╗\n" +
+                    "██║░░░██║██╔════╝██║░░░██║████╗░██║  ██╔══██╗██╔══██╗████╗░██║██║██╔════╝\n" +
+                    "██║░░░██║╚█████╗░██║░░░██║██╔██╗██║  ██║░░██║███████║██╔██╗██║██║█████╗░░\n" +
+                    "██║░░░██║░╚═══██╗██║░░░██║██║╚████║  ██║░░██║██╔══██║██║╚████║██║██╔══╝░░\n" +
+                    "╚██████╔╝██████╔╝╚██████╔╝██║░╚███║  ██████╔╝██║░░██║██║░╚███║██║███████╗\n" +
+                    "░╚═════╝░╚═════╝░░╚═════╝░╚═╝░░╚══╝  ╚═════╝░╚═╝░░╚═╝╚═╝░░╚══╝╚═╝╚══════╝");
             System.out.println("\nUsunałes:\n" + "#" + id + " | " + itemName + "\n");
+
+            MenuItem.menuItemID.set(0);
+            for (int i = 0; i < itemList.size(); i++) {
+                itemList.get(i).setId();
+
+            }
             return true;
         } else {
             return false;
@@ -119,6 +136,60 @@ public class Menu {
                        /*MENU*/
 
     /*Wyswietla na ekranie wszystkie dostepne dania*/
+    public void saveMenuItemsToFile() {
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("menu.txt"));
+            for (int i = 0; i < itemList.size(); i++) {
+                writer.write(
+                        "•" + itemList.get(i).getName() + "\n" +
+                        "¬" + itemList.get(i).getDescription() + "\n" +
+                        "ƒ" + itemList.get(i).getCategory() + "\n" +
+                        "‰" + itemList.get(i).getPrice() + "\n" +
+                        "next\n");
+            }
+            writer.close();
+        } catch (Exception e) {
+            return;
+        }
+        System.out.println("Zapisano menu");
+    }
+    public void loadMenuItemsFromFile() {
+        itemList.clear();
+        MenuItem.menuItemID.set(0);
+        String s = "";
+        String name = "";
+        String desc = "";
+        String cate = "";
+        String price = "";
+
+        try {
+            BufferedReader reader = new BufferedReader(
+                    new FileReader("menu.txt"));
+
+            while ((s = reader.readLine()) != null) {
+                if (s.startsWith("•")) {
+                    name = s.substring(1);
+                } else if (s.startsWith("¬")) {
+                    desc = s.substring(1);
+                } else if (s.startsWith("ƒ")) {
+                    cate = s.substring(1);
+                } else if (s.startsWith("‰")) {
+                    price = s.substring(1);
+                } else if (s.equalsIgnoreCase("next")) {
+                    addItem(name, desc, cate, Double.parseDouble(price));
+                }
+            }
+
+        }catch(Exception ignored) {
+
+        }
+
+        System.out.println("Wczytano menu");
+        printMenuItems();
+
+
+
+    }
     public void printMenuItems() {
         System.out.println("\n"+
                 ".----------------------------------.\n" +
@@ -126,7 +197,8 @@ public class Menu {
                 "'----------------------------------'");
 
         for (int i = 0; i < itemList.size(); i++) {
-            System.out.println("#" + itemList.get(i).getMenuItemID() + " | " + itemList.get(i).getName());
+            System.out.println("#" + itemList.get(i).getMenuItemID() + " | " + itemList.get(i).getName() +
+                    " | $" + itemList.get(i).getPrice());
         }
 
     }
@@ -142,15 +214,27 @@ public class Menu {
     /*Wyswietla całe menu, sortuje dania po kategoriach*/
     public void printMenu() {
 
+        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        System.out.println(
+                "███╗░░░███╗███████╗███╗░░██╗██╗░░░██╗\n" +
+                        "████╗░████║██╔════╝████╗░██║██║░░░██║\n" +
+                        "██╔████╔██║█████╗░░██╔██╗██║██║░░░██║\n" +
+                        "██║╚██╔╝██║██╔══╝░░██║╚████║██║░░░██║\n" +
+                        "██║░╚═╝░██║███████╗██║░╚███║╚██████╔╝\n" +
+                        "╚═╝░░░░░╚═╝╚══════╝╚═╝░░╚══╝░╚═════╝░\n");
+
         for (int i = 0; i < categoryList.size(); i++) {
-            System.out.println(categoryList.get(i));
+
+                System.out.print("#########|" + categoryList.get(i)+ "|#########");
+
 
             for (int j = 0; j < itemList.size(); j++) {
                 if (itemList.get(j).getCategory().equals(categoryList.get(i))) {
-                    System.out.println(itemList.get(j).getName() + "  $" +
+                    System.out.print("\n|" +itemList.get(j).getName() + "|  $" +
                             itemList.get(j).getPrice() + "\n" +
-                            itemList.get(j).getDescription() + "\n");
+                            itemList.get(j).getDescription());
                 }
+                System.out.println();
             }
         }
 
