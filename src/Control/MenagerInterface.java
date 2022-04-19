@@ -2,9 +2,6 @@ package Control;
 
 import Personel.Manager;
 
-import java.io.IOException;
-
-
 public class MenagerInterface extends UserInterface{
 
     private final Manager manager;
@@ -12,8 +9,6 @@ public class MenagerInterface extends UserInterface{
     public MenagerInterface() {
         this.manager = new Manager();
     }
-
-
 
     public void manageRestaurant() {
 
