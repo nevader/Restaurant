@@ -10,7 +10,7 @@ public class CilentInterface extends UserInterface{
         this.manageOrder = new ManageOrder();
     }
 
-    private void jestemKlientem() {
+    public void jestemKlientem() {
 
         System.out.println(
                 "\n1. Zarezerwuj stolik.\n" +
@@ -20,13 +20,14 @@ public class CilentInterface extends UserInterface{
 
         do {
             flag = false;
-            userChoice = userInput("Aby wybrac pozycje podaj odpowiadającą jej cyfre");
+            userChoice = userInputNextInt("Aby wybrac pozycje podaj odpowiadającą jej cyfre");
 
             switch (userChoice) {
                 case 1:
                     break;
 
                 case 2:
+                    manageOrder.placeDeliveryOrder();
                     break;
 
                 case 3:

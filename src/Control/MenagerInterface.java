@@ -25,7 +25,7 @@ public class MenagerInterface extends UserInterface{
 
         do {
             flag = false;
-            userChoice = userInput("Wybierz opcje: \n#");
+            userChoice = userInputNextInt("Wybierz opcje: \n#");
 
             switch (userChoice) {
                 case 1:
@@ -59,7 +59,7 @@ public class MenagerInterface extends UserInterface{
                 "'--------------------------'\n");
 
         do {
-            userChoice = userInput("Wybierz opcje: \n#");
+            userChoice = userInputNextInt("Wybierz opcje: \n#");
             flag = false;
             switch (userChoice) {
                 case 1:
@@ -97,7 +97,7 @@ public class MenagerInterface extends UserInterface{
                 "'----------------------------------'\n");
 
         do {
-            userChoice = userInput("Wybierz opcje: \n#");
+            userChoice = userInputNextInt("Wybierz opcje: \n#");
             flag = false;
 
             switch (userChoice) {

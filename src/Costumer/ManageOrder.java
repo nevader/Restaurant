@@ -3,6 +3,7 @@ package Costumer;
 import Control.UserInterface;
 import DataTypes.Address;
 import Personel.Customer;
+import Units.MenuItem;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -10,6 +11,7 @@ import java.util.Scanner;
 public class ManageOrder extends UserInterface {
 
     private ArrayList <newOrder> listofallorders;
+    private ArrayList <MenuItem> orderedItems;
     private ArrayList <Customer> customersList;
 
 
@@ -21,7 +23,6 @@ public class ManageOrder extends UserInterface {
         newOrder newOrder = new newOrder(isDelivery, status, customer);
         listofallorders.add(newOrder);
     }
-
     public Customer newCustomerDelivry() {
         Scanner in = new Scanner(System.in);
 
@@ -52,13 +53,81 @@ public class ManageOrder extends UserInterface {
 
         return customer;
 
+    }
 
+    /*
+    * Dodac sciezke gdzie jestesmy w menu typu Main > zarzadzam restauracaj > dodaj danie
+    *  (jezeli jest za dlugie to wykropkowac )
+    *
+    * poprawic do while loopa w delivery zeby byla mozliwosc dodac cos do koszyka pare razy
+    *
+    * no i oczywiscie poprawic wyglad
+    *
+    * w total price poprawic formatowanie ceny
+    * */
+    public ArrayList<MenuItem> addItemsDoKosztka () {
+
+        ArrayList <MenuItem> koszyk = new ArrayList<>();
+        ArrayList <MenuItem> listaDan = menu.getItemList();
+
+        menu.printMenu();
+
+        int id;
+        int ilosc;
+
+        id = userInputNextInt("Podaj id:");
+        ilosc = userInputNextInt("Podaj ilosc:");
+        boolean found = false;
+
+        for (int i = 0; i < listaDan.size() || !found; i++) {
+            if (listaDan.get(i).getMenuItemID() == id) {
+                found = true;
+                for (int j = 0; j < ilosc; j++) {
+                    koszyk.add(listaDan.get(i));
+                }
+            }
+        }
+
+        return koszyk;
+
+    }
+    public void showKoszyk (ArrayList <MenuItem> koszyk) {
+
+        double totalprice = 0;
+
+        for (int i = 0; i < koszyk.size(); i++) {
+            System.out.print("#" + (i+1) + " " + koszyk.get(i).getName() +
+                    " |" + koszyk.get(i).getPrice() + "|\n");
+
+            totalprice += koszyk.get(i).getPrice();
+        }
+        System.out.println("Total price: $" + totalprice);
 
 
     }
-
     public void placeDeliveryOrder() {
-        System.out.println("Co chcesz zamowic? ilosc itp.");
+
+        ArrayList <MenuItem> koszyk = new ArrayList<>();
+
+        koszyk.addAll(addItemsDoKosztka());
+
+        System.out.println("1. dodaj kolejne\n" +
+                "2. pokaz koszyk.");
+
+        do {
+            userChoice = userInputNextInt("Wybierz:");
+            switch (userChoice) {
+                case 1:
+                    koszyk.addAll(addItemsDoKosztka());
+                    break;
+                case 2:
+                    showKoszyk(koszyk);
+                default:
+                    System.out.println("Poprawna");
+                    break;
+            }
+        } while (!flag);
+
 
 /*    TODO
 

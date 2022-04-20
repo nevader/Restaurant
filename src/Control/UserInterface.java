@@ -12,7 +12,7 @@ public abstract class UserInterface {
     public int userChoice;
     public Menu menu = StartInterface.menu;
 
-    public int userInput (String msg) {
+    public int userInputNextInt(String msg) {
 
         int userChoice = 0;
         boolean isValidOption = false;

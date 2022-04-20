@@ -1,10 +1,6 @@
 package Control;
 
-import Personel.Manager;
 import Units.Menu;
-
-import java.util.InputMismatchException;
-import java.util.Scanner;
 
 public class StartInterface extends UserInterface{
 
@@ -30,10 +26,11 @@ public class StartInterface extends UserInterface{
         do {
 
             flag = false;
-            userChoice = userInput("Wybierz opcje: \n#");
+            userChoice = userInputNextInt("Wybierz opcje: \n#");
 
             switch (userChoice) {
                 case 1:
+                    cilentInterface.jestemKlientem();
                     break;
 
                 case 2:

@@ -83,10 +83,7 @@ public class Menu {
         this.itemList = itemList;
     }
 
-    /*Zwraca danie z listy pod podanym indexem*/
-    public MenuItem getMenuItem (int index) {
-        return itemList.get(index);
-    }
+
 
     /*Dodaje nowe danie do listy*/
     public void addItem(String name, String description, String category, double price) {

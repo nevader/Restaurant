@@ -1,6 +1,5 @@
 package Personel;
 
-import Control.MenagerInterface;
 import Control.UserInterface;
 
 import java.util.InputMismatchException;
@@ -130,7 +129,7 @@ public class Manager extends UserInterface {
 
         do {
             flag = false;
-            userChoice = userInput("Wybierz opcje: \n#");
+            userChoice = userInputNextInt("Wybierz opcje: \n#");
             switch (userChoice) {
                 case 1:
                     addItem();
@@ -158,7 +157,7 @@ public class Manager extends UserInterface {
         menu.printMenuItems();
         System.out.print("#0 Cofnij\n");
 
-        userChoice = userInput("\nWybierz opcje: \n#");
+        userChoice = userInputNextInt("\nWybierz opcje: \n#");
 
         if (userChoice == 0) {
             return;
@@ -174,7 +173,7 @@ public class Manager extends UserInterface {
                     "'-----------------------'\n");
 
             do {
-                userChoice = userInput("Wybierz opcje: \n#");
+                userChoice = userInputNextInt("Wybierz opcje: \n#");
                 switch (userChoice) {
                     case 1:
                         flag = true;
