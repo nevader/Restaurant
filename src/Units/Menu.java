@@ -227,9 +227,10 @@ public class Menu {
 
             for (int j = 0; j < itemList.size(); j++) {
                 if (itemList.get(j).getCategory().equals(categoryList.get(i))) {
-                    System.out.print("\n|" +itemList.get(j).getName() + "|  $" +
-                            itemList.get(j).getPrice() + "\n" +
-                            itemList.get(j).getDescription());
+                    System.out.print("\n" +
+                            "#"+ itemList.get(j).getMenuItemID()+" --> |" +itemList.get(j).getName() + "| --> |$" +
+                            itemList.get(j).getPrice() + "|\n(" +
+                            itemList.get(j).getDescription() + ")");
                 }
                 System.out.println();
             }

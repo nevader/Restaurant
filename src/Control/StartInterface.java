@@ -31,6 +31,8 @@ public class StartInterface extends UserInterface{
             switch (userChoice) {
                 case 1:
                     cilentInterface.jestemKlientem();
+                    spacing();
+                    ekranPowitalny();
                     break;
 
                 case 2:
