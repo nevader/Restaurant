@@ -19,13 +19,13 @@ public class newOrder {
     private String status;
     private ArrayList <MenuItem> orderedItems;
 
-    public newOrder(boolean isDelivery, String status, Customer customer) {
+    public newOrder(boolean isDelivery, String status, Customer customer, ArrayList<MenuItem> orderedItems) {
         this.time = new Date();
         id = orderID.incrementAndGet();
         this.customer = customer;
         this.isDelivery = isDelivery;
         this.status = status;
-        this.orderedItems = new ArrayList<>();
+        this.orderedItems = orderedItems;
     }
 
 

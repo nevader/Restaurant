@@ -33,6 +33,8 @@ public class MenagerInterface extends UserInterface{
                     zarzadzajMenu();
                     break;
                 case 2:
+                    System.out.println("zamowienia");
+                    manager.printOrders();
                     break;
                 case 3:
                     break;

@@ -1,11 +1,16 @@
 package Personel;
 
 import Control.UserInterface;
+import Costumer.ManageOrder;
+import Costumer.newOrder;
+import Units.MenuItem;
 
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Manager extends UserInterface {
+
 
 
     public void addItem() {
@@ -189,6 +194,15 @@ public class Manager extends UserInterface {
             } while (!flag);
         }
 
+    }
+    public void printOrders() {
+
+        ArrayList<newOrder> orders = ManageOrder.listofallorders;
+
+        for (int i = 0; i < orders.size(); i++) {
+            System.out.println(orders.get(i).getOrderedItems());
+            System.out.println(orders.get(i).getTime());
+        }
     }
 
     }

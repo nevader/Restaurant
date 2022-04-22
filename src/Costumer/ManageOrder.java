@@ -10,8 +10,7 @@ import java.util.Scanner;
 
 public class ManageOrder extends UserInterface {
 
-    private ArrayList <newOrder> listofallorders;
-    private ArrayList <MenuItem> orderedItems;
+    public static ArrayList <newOrder> listofallorders;
     private ArrayList <Customer> customersList;
     private ArrayList <MenuItem> koszyk = new ArrayList<>();
 
@@ -19,40 +18,9 @@ public class ManageOrder extends UserInterface {
         this.listofallorders = new ArrayList<>();
     }
 
-    public void newOrder(boolean isDelivery, String status, Customer customer) {
-        newOrder newOrder = new newOrder(isDelivery, status, customer);
+    public void newOrder(Customer customer, ArrayList<MenuItem> orderedItems) {
+        newOrder newOrder = new newOrder(true, "W przygotowywaniu", customer, orderedItems);
         listofallorders.add(newOrder);
-    }
-    public Customer newCustomerDelivry() {
-        Scanner in = new Scanner(System.in);
-
-        String miasto;
-        String ulica;
-        String zipcode;
-        String imie;
-        String telefon;
-        System.out.println("Podaj swoje imie");
-        imie = in.nextLine();
-        System.out.println("Podaj swoj telefon");
-        telefon = in.nextLine();
-
-        System.out.println("Type your adress: ");
-        ulica = in.nextLine();
-
-        System.out.println("Miasto: ");
-        miasto = in.nextLine();
-
-        System.out.println("zipkode");
-        zipcode = in.nextLine();
-
-        Address address = new Address(ulica, miasto, zipcode);
-
-        Customer customer = new Customer(imie, telefon, true, address);
-
-        customersList.add(customer);
-
-        return customer;
-
     }
 
     /*
@@ -66,57 +34,6 @@ public class ManageOrder extends UserInterface {
     * w total price poprawic formatowanie ceny
     * */
 
-    public void clearKoszyk() {
-        koszyk.clear();
-    }
-    public ArrayList<MenuItem> addItemsDoKosztka () {
-
-        ArrayList <MenuItem> koszyk = new ArrayList<>();
-        ArrayList <MenuItem> listaDan = menu.getItemList();
-
-        _koszyk();
-        menu.printMenu();
-
-
-        do {
-            flag = false;
-            userChoice = userInputNextInt("Podaj ID");
-
-            if (userChoice < 1 || userChoice > listaDan.size()) {
-                System.out.println("Podaj poprawny ID");
-
-            } else {
-                for (int i = 0; i < listaDan.size() || !flag; i++) {
-                    if (listaDan.get(i).getMenuItemID() == userChoice) {
-                        int ilosc = userInputNextInt("Podaj ilosc: ");
-                        for (int j = 0; j < ilosc; j++) {
-                            koszyk.add(listaDan.get(i));
-                            flag = true;
-                        }
-
-                    }
-                }
-            }
-        } while (!flag);
-
-        return koszyk;
-
-    }
-    public void showKoszyk (ArrayList <MenuItem> koszyk) {
-
-        double totalprice = 0;
-
-        System.out.println("");
-        for (int i = 0; i < koszyk.size(); i++) {
-            System.out.print("#" + (i+1) + " " + koszyk.get(i).getName() +
-                    " |" + koszyk.get(i).getPrice() + "|\n");
-
-            totalprice += koszyk.get(i).getPrice();
-        }
-        System.out.println("Total price: $" + totalprice);
-
-
-    }
     public void placeDeliveryOrder() {
 
         do {
@@ -142,6 +59,7 @@ public class ManageOrder extends UserInterface {
                     pressAnyKeyToContinue();
                     placeDeliveryOrder();
                 case 3:
+                    podsumowanie();
                     break;
                 case 0:
                     flag = true;
@@ -214,9 +132,61 @@ public class ManageOrder extends UserInterface {
         //list
         //listofallorders -- ilosc kucharzy -- ilosc dostawcow? */
     }
-    public Customer daneDoDostawy() {
+
+    public ArrayList<MenuItem> addItemsDoKosztka () {
+
+        ArrayList <MenuItem> koszyk = new ArrayList<>();
+        ArrayList <MenuItem> listaDan = menu.getItemList();
+
+        _koszyk();
+        menu.printMenu();
+
+
+        do {
+            flag = false;
+            userChoice = userInputNextInt("Podaj ID");
+
+            if (userChoice < 1 || userChoice > listaDan.size()) {
+                System.out.println("Podaj poprawny ID");
+
+            } else {
+                for (int i = 0; i < listaDan.size() || !flag; i++) {
+                    if (listaDan.get(i).getMenuItemID() == userChoice) {
+                        int ilosc = userInputNextInt("Podaj ilosc: ");
+                        for (int j = 0; j < ilosc; j++) {
+                            koszyk.add(listaDan.get(i));
+                            flag = true;
+                        }
+
+                    }
+                }
+            }
+        } while (!flag);
+
+        return koszyk;
+
+    }
+    public void showKoszyk (ArrayList <MenuItem> koszyk) {
+
+        double totalprice = 0;
+
+        System.out.println("");
+        for (int i = 0; i < koszyk.size(); i++) {
+            System.out.print("#" + (i+1) + " " + koszyk.get(i).getName() +
+                    " |" + koszyk.get(i).getPrice() + "|\n");
+
+            totalprice += koszyk.get(i).getPrice();
+        }
+        System.out.println("Total price: $" + totalprice);
+
+
+    }
+    public void clearKoszyk() {
+        koszyk.clear();
+    }
+
+    public Customer daneDoDostawy(){
         Scanner in = new Scanner(System.in);
-        ArrayList<MenuItem> koszyk = new ArrayList<>();
 
         String street;
         String city;
@@ -282,7 +252,16 @@ public class ManageOrder extends UserInterface {
         return customer;
 
     }
-    public void edytujDane() {}
+    public void podsumowanie() {
+        Customer customer = daneDoDostawy();
+
+        _podsumowanie();
+
+        newOrder(customer, koszyk);
+
+    }
+    public void edytujDane() {
+    }
     }
 
 
