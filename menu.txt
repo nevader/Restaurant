@@ -1,0 +1,15 @@
+•Gdaczący ogromny zestaw
+¬Duży kubełek, podwójny Fillet Burger, Fowl Wrap, frytki i Sprunk
+ƒZESTAW
+‰10.1
+next
+•Gdaczący duży zestaw
+¬Frytki, Fillet Burger/Fowl Wrap/Large Wing Pieces i Sprunk
+ƒZESTAW
+‰5.2
+next
+•Gdaczący mały zestaw
+¬Zestaw dla dzieci, frytki, Sprunk i zabawkowy Cluck Norris
+ƒZESTAW
+‰2.5
+next
