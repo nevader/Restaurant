@@ -1,13 +1,13 @@
-package Control;
+package UI;
 
-import Personel.Manager;
+import Units.RestaurantManage;
 
 public class MenagerInterface extends UserInterface{
 
-    private final Manager manager;
+    private final RestaurantManage restaurantManage;
 
     public MenagerInterface() {
-        this.manager = new Manager();
+        restaurantManage = new RestaurantManage();
     }
 
     public void manageRestaurant() {
@@ -34,9 +34,13 @@ public class MenagerInterface extends UserInterface{
                     break;
                 case 2:
                     System.out.println("zamowienia");
-                    manager.printOrders();
+                    restaurantManage.printOrders();
+                    pressAnyKeyToContinue();
+                    manageRestaurant();
                     break;
                 case 3:
+                    zarzadzajPersonelem();
+                    manageRestaurant();
                     break;
                 case 4:
                     break;
@@ -71,7 +75,7 @@ public class MenagerInterface extends UserInterface{
                 case 2:
                     break;
                 case 3:
-                    menu.printMenu();
+                    menuManage.printMenu();
                     pressAnyKeyToContinue();
                     zarzadzajMenu();
                     break;
@@ -104,23 +108,23 @@ public class MenagerInterface extends UserInterface{
 
             switch (userChoice) {
                 case 1:
-                    manager.addItem();
+                    restaurantManage.addItem();
                     zarzadzajDaniami();
                     break;
                 case 2:
-                    manager.removeItem();
+                    restaurantManage.removeItem();
                     zarzadzajDaniami();
                     break;
                 case 3:
-                    menu.saveMenuItemsToFile();
+                    menuManage.saveMenuItemsToFile();
                     zarzadzajDaniami();
                     break;
                 case 4:
-                    menu.loadMenuItemsFromFile();
+                    menuManage.loadMenuItemsFromFile();
                     break;
                 case 5:
                     _dania();
-                    menu.printMenuItems();
+                    menuManage.printMenuItems();
                     pressAnyKeyToContinue();
                     zarzadzajDaniami();
                 case 0:
@@ -133,5 +137,42 @@ public class MenagerInterface extends UserInterface{
             }
         } while (!flag);
 
+    }
+    public void zarzadzajPersonelem() {
+
+        _personel();
+
+        System.out.println("\n" +
+                ".---------------------------------------.\n" +
+                "| #1 Zatrudnij nowego pracownika        |\n" +
+                "| #2 Zwolnij aktualnego pracownika      |\n" +
+                "| #3 Pokaz liste wszystkich pracownikow |\n" +
+                "| #0 Cofnij                             |\n" +
+                "'---------------------------------------'\n");
+
+        do {
+            flag = false;
+            userChoice = userInputNextInt("Wybierz opcje: \n#");
+
+            switch (userChoice) {
+                case 1:
+                    restaurantManage.addNewEmploy();
+                    zarzadzajPersonelem();
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    personelManage.printListaPracownikow();
+                    pressAnyKeyToContinue();
+                    zarzadzajPersonelem();
+                    break;
+                case 0:
+                    flag = true;
+                    break;
+                default:
+                    wybierzPoprawna();
+                    break;
+            }
+        } while (!flag);
     }
 }

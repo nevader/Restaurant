@@ -1,17 +1,16 @@
-package Personel;
+package Units;
 
-import Control.UserInterface;
-import Costumer.ManageOrder;
-import Costumer.newOrder;
-import Units.MenuItem;
+import UI.UserInterface;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class Manager extends UserInterface {
+public class RestaurantManage extends UserInterface {
 
-
+    DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     public void addItem() {
 
@@ -21,8 +20,8 @@ public class Manager extends UserInterface {
         _noweDanie();
         System.out.println("\n" +
                 ".---------------------------.\n" +
-                        "| Wpisz nazwę nowego dania: |\n" +
-                        "'---------------------------'\n");
+                "| Wpisz nazwę nowego dania: |\n" +
+                "'---------------------------'\n");
         System.out.print("#");
         String name = in.nextLine();
 
@@ -37,7 +36,6 @@ public class Manager extends UserInterface {
         String desc = in.nextLine();
 
 
-
         double cena = 0;
 
         do {
@@ -45,9 +43,9 @@ public class Manager extends UserInterface {
             System.out.println("\nNazwa dania: " + name + "\n" +
                     "Opis dania: " + desc + "\n" +
                     "\n" +
-                            ".----------------------------------------.\n" +
-                            "| Podaj cene w formacie 'xx,xx' np. 1,42 |\n" +
-                            "'----------------------------------------'\n");
+                    ".----------------------------------------.\n" +
+                    "| Podaj cene w formacie 'xx,xx' np. 1,42 |\n" +
+                    "'----------------------------------------'\n");
             System.out.print("#");
             try {
                 cena = in.nextDouble();
@@ -58,7 +56,6 @@ public class Manager extends UserInterface {
         } while (!isValidOption);
 
 
-
         _noweDanie();
         System.out.print("\nNazwa dania: " + name + "\n" +
                 "Opis dania: " + desc + "\n" + "Cena dania: $" + cena + "\n\n" +
@@ -66,7 +63,7 @@ public class Manager extends UserInterface {
                 "| Przypisz danie do jednej z podanych kategorii, |\n" +
                 "|            lub utworz nowa kategorie.          |\n" +
                 "'------------------------------------------------'\n");
-        menu.printCategories();
+        menuManage.printCategories();
         System.out.println("\n#0. DODAJ NOWĄ\n");
         System.out.print("#");
 
@@ -97,24 +94,24 @@ public class Manager extends UserInterface {
 
             newKategory = in.nextLine();
 
-            menu.addCategory(newKategory);
+            menuManage.addCategory(newKategory);
 
 
         } else {
             flag = false;
 
             do {
-                if (kategoriaInt > menu.getCategoryList().size() + 1 ||
+                if (kategoriaInt > menuManage.getCategoryList().size() + 1 ||
                         kategoriaInt < 1) {
                     System.out.println("Wybierz poprawna kategorie");
                 } else {
-                    newKategory = menu.getCategoryIndex(kategoriaInt);
+                    newKategory = menuManage.getCategoryIndex(kategoriaInt);
                     flag = true;
                 }
             } while (!flag);
         }
 
-        menu.addItem(name, desc, newKategory, cena);
+        menuManage.addItem(name, desc, newKategory, cena);
         _noweDanie();
         System.out.print("\n" +
                 ".------------------------------------.\n" +
@@ -127,9 +124,9 @@ public class Manager extends UserInterface {
 
         System.out.println(
                 ".---------------------.\n" +
-                "| #1 Dodaj nowe danie |\n"  +
-                "| #0 Wróc             |\n" +
-                "'---------------------'\n");
+                        "| #1 Dodaj nowe danie |\n" +
+                        "| #0 Wróc             |\n" +
+                        "'---------------------'\n");
 
 
         do {
@@ -150,6 +147,7 @@ public class Manager extends UserInterface {
         } while (!flag);
 
     }
+
     public void removeItem() {
 
         _usunDanie();
@@ -159,7 +157,7 @@ public class Manager extends UserInterface {
                 "|      Wybierz danie ktore chcesz usunąć.    |\n" +
                 "| Wpisz liczbę która jest do niego przypisan |\n" +
                 "'--------------------------------------------'");
-        menu.printMenuItems();
+        menuManage.printMenuItems();
         System.out.print("#0 Cofnij\n");
 
         userChoice = userInputNextInt("\nWybierz opcje: \n#");
@@ -168,14 +166,14 @@ public class Manager extends UserInterface {
             return;
         }
 
-        boolean removed = menu.removeItem(userChoice);
+        boolean removed = menuManage.removeItem(userChoice);
 
         if (removed) {
             System.out.println(
                     ".-----------------------.\n" +
-                    "| #1 Usun kolejne danie |\n" +
-                    "| #0 Cofnij             |\n" +
-                    "'-----------------------'\n");
+                            "| #1 Usun kolejne danie |\n" +
+                            "| #0 Cofnij             |\n" +
+                            "'-----------------------'\n");
 
             do {
                 userChoice = userInputNextInt("Wybierz opcje: \n#");
@@ -195,15 +193,93 @@ public class Manager extends UserInterface {
         }
 
     }
+
     public void printOrders() {
 
-        ArrayList<newOrder> orders = ManageOrder.listofallorders;
+        ArrayList<OrdersManage.Order> orders = OrdersManage.listofallorders;
 
+        _zamowienia();
+        System.out.println();
         for (int i = 0; i < orders.size(); i++) {
-            System.out.println(orders.get(i).getOrderedItems());
-            System.out.println(orders.get(i).getTime());
+            System.out.println("#########| #" + orders.get(i).getId() + " |############");
+            System.out.println(orders.get(i).getCustomer().getName());
+            isDelivery();
+            System.out.println();
+            System.out.println(orders.get(i).getStatus());
+            System.out.println(dateFormat.format(orders.get(i).getDate()));
+            System.out.println("###########################\n");
         }
     }
 
+    public void isDelivery() {
+        for (int i = 0; i < OrdersManage.listofallorders.size(); i++) {
+            if (OrdersManage.listofallorders.get(i).isDelivery()) {
+                System.out.print("Dostawa");
+            } else {
+                System.out.print("W lokalu");
+            }
+        }
     }
 
+    /*Personel*/
+    public void addNewEmploy() {
+        _nowyPracownik();
+        Scanner in = new Scanner(System.in);
+        System.out.println(
+                "\n.-------------------------------.\n" +
+                "| Podaj imię nowego pracownika: |\n" +
+                "'-------------------------------'\n");
+        System.out.println("Wpisz:");
+        System.out.print("#");
+        String imie = in.nextLine();
+
+        _nowyPracownik();
+        System.out.println(
+                      "\n.-----------------------------------------.\n" +
+                        "| Podaj numer telefonu nowego pracownika: |\n" +
+                        "'-----------------------------------------'\n");
+        System.out.println("Wpisz:");
+        System.out.print("#");
+        String telefon = in.nextLine();
+
+
+        _nowyPracownik();
+        System.out.println("\nRola nowego pracownika:\n" +
+                ".-------------.\n" +
+                "| #1 Kucharz  |\n" +
+                "| #2 Dostawca |\n" +
+                "'-------------'\n");
+        do {
+            flag = false;
+            userChoice = userInputNextInt("Wybierz opcje: \n#");
+            switch (userChoice) {
+                case 1:
+                    personelManage.addChef(imie, telefon);
+                    _nowyPracownik();
+                    System.out.println("\nWitaj na pokładzie " + imie + "!");
+                    pressAnyKeyToContinue();
+                    flag = true;
+                    break;
+                case 2:
+                    personelManage.addDeliveryMan(imie, telefon);
+                    _nowyPracownik();
+                    System.out.println("\nWitaj na pokładzie " + imie + "!");
+                    pressAnyKeyToContinue();
+                    flag = true;
+                    return;
+                default:
+                    _nowyPracownik();
+                    System.out.println("\nRola nowego pracownika:\n" +
+                            ".-------------.\n" +
+                            "| #1 Kucharz  |\n" +
+                            "| #2 Dostawca |\n" +
+                            "'-------------'");
+                    System.out.println("\nWYBIERZ POPRAWNĄ OPCJĘ!");
+                    break;
+            }
+        } while (!flag);
+
+
+    }
+
+}

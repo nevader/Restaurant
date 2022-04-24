@@ -1,13 +1,15 @@
-package Control;
+package UI;
 
-import Costumer.ManageOrder;
+import Units.OrdersManage;
+
+import java.util.Scanner;
 
 public class CilentInterface extends UserInterface{
 
-    private ManageOrder manageOrder;
+    private final OrdersManage ordersManage;
 
     public CilentInterface() {
-        this.manageOrder = new ManageOrder();
+        this.ordersManage = new OrdersManage();
     }
 
     public void jestemKlientem() {
@@ -27,15 +29,19 @@ public class CilentInterface extends UserInterface{
 
             switch (userChoice) {
                 case 1:
+                    ordersManage.placeStacjonarne();
                     break;
 
                 case 2:
-                    manageOrder.clearKoszyk();
-                    manageOrder.placeDeliveryOrder();
+                    ordersManage.clearKoszyk();
+                    ordersManage.placeDeliveryOrder();
                     jestemKlientem();
                     break;
 
                 case 3:
+                    menuManage.printMenu();
+                    pressAnyKeyToContinue();
+                    jestemKlientem();
                     break;
 
                 case 0:
@@ -53,6 +59,7 @@ public class CilentInterface extends UserInterface{
 
 
     }
+
 
 
 }

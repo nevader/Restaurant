@@ -15,11 +15,9 @@ public class Address {
     public String getStreetAddress() {
         return streetAddress;
     }
-
     public String getCity() {
         return city;
     }
-
     public String getZipCode() {
         return zipCode;
     }
@@ -27,11 +25,9 @@ public class Address {
     public void setStreetAddress(String streetAddress) {
         this.streetAddress = streetAddress;
     }
-
     public void setCity(String city) {
         this.city = city;
     }
-
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }

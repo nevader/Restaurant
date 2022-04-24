@@ -1,12 +1,17 @@
-package Control;
+package UI;
 
-import Units.Menu;
+import Restauracja.Tables;
+import Units.PersonelManage;
+import Units.MenuManage;
 
 public class StartInterface extends UserInterface{
 
-    public final static Menu menu = new Menu();
+    public final static MenuManage MANAGE_MENU = new MenuManage();
+    public final static PersonelManage MANAGE_PERSONEL = new PersonelManage();
+    public final static Tables tables = new Tables();
     private CilentInterface cilentInterface;
     private MenagerInterface menagerInterface;
+
 
     public StartInterface() {
         this.cilentInterface = new CilentInterface();

@@ -1,4 +1,4 @@
-package Personel;
+package Entities;
 
 import DataTypes.Address;
 import DataTypes.Person;
@@ -15,27 +15,9 @@ public class Customer extends Person {
         this.address = address;
     }
 
-
-    @Override
-    public void setName(String name) {
-        super.setName(name);
-    }
-    @Override
-    public void setPhone(String phone) {
-        super.setPhone(phone);
-    }
-    public void setDelivery(boolean delivery) {
-        isDelivery = delivery;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
     public boolean isDelivery() {
         return isDelivery;
     }
-
     public Address getAddress() {
         return address;
     }

@@ -1,13 +1,16 @@
-import Control.StartInterface;
+import UI.StartInterface;
 
-import static Control.StartInterface.menu;
+import static UI.StartInterface.MANAGE_MENU;
+import static UI.StartInterface.MANAGE_PERSONEL;
 
 public class Main {
 
     public static void main(String[] args) {
 
         StartInterface startInterface = new StartInterface();
-        menu.addDefaultItems();
+        MANAGE_MENU.addDefaultItems();
+        MANAGE_PERSONEL.addDefaultPracownicy();
+
 
         startInterface.ekranPowitalny();
 
