@@ -1,16 +1,18 @@
 package Units;
 
+import Enums.Status;
+import Restauracja.Kitchen;
 import UI.UserInterface;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class RestaurantManage extends UserInterface {
 
-    DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+    private final DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+    private final Kitchen kitchen = new Kitchen();
 
     public void addItem() {
 
@@ -196,30 +198,31 @@ public class RestaurantManage extends UserInterface {
 
     public void printOrders() {
 
-        ArrayList<OrdersManage.Order> orders = OrdersManage.listofallorders;
+        kitchen.cook();
 
         _zamowienia();
-        System.out.println();
-        for (int i = 0; i < orders.size(); i++) {
-            System.out.println("#########| #" + orders.get(i).getId() + " |############");
-            System.out.println(orders.get(i).getCustomer().getName());
-            isDelivery();
-            System.out.println();
-            System.out.println(orders.get(i).getStatus());
-            System.out.println(dateFormat.format(orders.get(i).getDate()));
-            System.out.println("###########################\n");
-        }
-    }
 
-    public void isDelivery() {
-        for (int i = 0; i < OrdersManage.listofallorders.size(); i++) {
-            if (OrdersManage.listofallorders.get(i).isDelivery()) {
-                System.out.print("Dostawa");
+
+        System.out.println("\nRestaurant orders - Cooking \n######################################");
+        for (int i = 0; i < OrdersManage.currentOrders.size(); i++) {
+            if (OrdersManage.currentOrders.get(i).getDaty().get(Status.COOKDATE.toString()) != null) {
+                System.out.println("ID #" + OrdersManage.currentOrders.get(i).getId() +
+                        "\nOrder time: " + dateFormat.format(OrdersManage.currentOrders.get(i).getDaty().get(Status.ORDERDATE.toString())) +
+                        "\nStarted preparing at: " + dateFormat.format(OrdersManage.currentOrders.get(i).getDaty().get(Status.PREPARINGDATE.toString())) +
+                        "\nFinished cooking at: " + dateFormat.format(OrdersManage.currentOrders.get(i).getDaty().get(Status.COOKDATE.toString())) +
+                        "\n######################################\n");
             } else {
-                System.out.print("W lokalu");
+                System.out.println("ID #" + OrdersManage.currentOrders.get(i).getId() +
+                        "\nOrder time: " + dateFormat.format(OrdersManage.currentOrders.get(i).getDaty().get(Status.ORDERDATE.toString())) +
+                        "\nStarted preparing at: " + dateFormat.format(OrdersManage.currentOrders.get(i).getDaty().get(Status.PREPARINGDATE.toString())) +
+                        "\n######################################\n");
             }
         }
-    }
+        }
+
+
+
+
 
     /*Personel*/
     public void addNewEmploy() {

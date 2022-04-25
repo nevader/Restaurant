@@ -1,23 +1,35 @@
 package Units;
 
+import Enums.Status;
 import UI.UserInterface;
 import DataTypes.Address;
 import Entities.Customer;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class OrdersManage extends UserInterface {
 
-    public static ArrayList <Order> listofallorders;
-    private ArrayList <Customer> customersList;
-    private ArrayList <MenuManage.MenuItem> koszyk = new ArrayList<>();
+    public static ArrayList <Order> currentOrders;
+
+    public static ArrayList <Order> deliveryOrderstoCook;
+    public static ArrayList <Order> tableOrderstoCook;
+
+    public static ArrayList <Order> deliveryOrderstoPlace;
+    public static ArrayList <Order> tableOrderstoPlace;
+
+    public static ArrayList <Order> completedOrders;
+
+    private final ArrayList <MenuManage.MenuItem> koszyk = new ArrayList<>();
 
     public OrdersManage() {
-        listofallorders = new ArrayList<>();
+        currentOrders = new ArrayList<>();
+        deliveryOrderstoCook = new ArrayList<>();
+        tableOrderstoCook = new ArrayList<>();
+        completedOrders = new ArrayList<>();
+        deliveryOrderstoPlace = new ArrayList<>();
+        tableOrderstoPlace = new ArrayList<>();
     }
 
 
@@ -25,7 +37,7 @@ public class OrdersManage extends UserInterface {
 
 
     /*Delivery*/
-    public void placeDeliveryOrder() {
+    public void deliveryMenu() {
 
         do {
             flag = false;
@@ -42,90 +54,28 @@ public class OrdersManage extends UserInterface {
             switch (userChoice) {
                 case 1:
                     koszyk.addAll(addItemsDoKosztka());
-                    placeDeliveryOrder();
+                    deliveryMenu();
                     break;
                 case 2:
                     _koszyk();
                     showKoszyk(koszyk);
                     pressAnyKeyToContinue();
-                    placeDeliveryOrder();
+                    deliveryMenu();
+                    break;
                 case 3:
+                    deliveryFinish();
                     flag = true;
-                    podsumowanieDelivery();
-                    pressAnyKeyToContinue();
                     break;
                 case 0:
                     flag = true;
-                    break;
-                default:
                     break;
             }
 
 
         } while (!flag);
 
-
-
-
-
-/*    TODO
-
-        double tempprice;
-        double totalpricel
-        int ilosc;
-
-        sout -> pokazuje menu
-        sout -> wybierz id
-
-        jakas metoda ktora zwraca cene przedmiotu o wskazanym ID.
-
-        temprice = getprice
-
-        sout --> wybierz ilosc
-
-        ilosc = ilosc;
-        total price += ilosc * tempprice;
-
-        sout --> dodaj kolejny item albo kontynutuj
-
-        if (dodaj kolejny loop) ? podzielic metode na czesci?
-
-        else (kontynutuj)
-        sout --> podsumowanie (Do zaplaty: totalprice + oczekiwany czas dostawy)
-
-        oczekiwany czas dostawy?
-
-        kuchnia {
-        przyzadza jedno danie 30sekund -> wiecej kucharzy mniejszy czas przyzadzania
-        status dania: wprzygotowywaniu.
-        sortuje liste zamowien !isDelivery > isDelivery || getID < getID
-        przyzadza najpierw zamowienia stacjonarne isDelivery
-
-       Ustalic na podstawie Date (godziny) czy danie juz jest gotowe.
-
-       current time x
-       orderlist [] [] [] [] [] [] [] [] []
-       mark zrobione as zrobione
-
-
-        }
-
-        kurier {
-        dostarcza jedna paczke 2min
-        lista kurierow, status wolny, zajety?
-
-        }
-
-
-        zmienic:
-        listofallorders na --> listaZamowien
-
-        //show przewidywany czas dostawy????
-        //listofalloders wyjebac zamowienia ze statusem zrobione to
-        //list
-        //listofallorders -- ilosc kucharzy -- ilosc dostawcow? */
     }
-    public Customer daneDoDostawy(){
+    public Customer deliveryInfo() {
         Scanner in = new Scanner(System.in);
 
         String street;
@@ -190,13 +140,12 @@ public class OrdersManage extends UserInterface {
 
 
         Address address = new Address(street, city, zipcode);
-        Customer customer = new Customer(imie, telefon, true, address);
 
-        return customer;
+        return new Customer(imie, telefon, true, address, 0);
 
     }
-    public void podsumowanieDelivery() {
-        Customer customer = daneDoDostawy();
+    public void deliveryFinish() {
+        Customer customer = deliveryInfo();
 
         _podsumowanie();
 
@@ -219,21 +168,25 @@ public class OrdersManage extends UserInterface {
         System.out.println("Miasto: " + customer.getAddress().getCity());
 
 
-        newOrder(customer, koszyk);
+        newOrderDelivery(customer, koszyk);
+        pressAnyKeyToContinue();
 
     }
 
     /*Rozne*/
-    public void newOrder(Customer customer, ArrayList<MenuManage.MenuItem> orderedItems) {
-        Order Order = new Order(true, "W przygotowywaniu", customer, orderedItems);
-        listofallorders.add(Order);
+    public void newOrderDelivery(Customer customer, ArrayList<MenuManage.MenuItem> orderedItems) {
+        Order Order = new Order(true, Status.REALIZACJA.toString(), customer, orderedItems);
+        currentOrders.add(Order);
+    }
+    public void newOrderRestaurant(Customer customer, ArrayList<MenuManage.MenuItem> orderedItems) {
+        Order Order = new Order(false, Status.REALIZACJA.toString(), customer, orderedItems);
+        currentOrders.add(Order);
     }
     public ArrayList<MenuManage.MenuItem> addItemsDoKosztka () {
 
         ArrayList <MenuManage.MenuItem> koszyk = new ArrayList<>();
         ArrayList <MenuManage.MenuItem> listaDan = menuManage.getItemList();
 
-        _koszyk();
         menuManage.printMenu();
 
 
@@ -282,13 +235,92 @@ public class OrdersManage extends UserInterface {
 
     /*Stacjonarne*/
     public void placeStacjonarne() {
-        int stolik;
 
-        stolik = rezerwujStolik();
+
+        Scanner in = new Scanner(System.in);
+        int stolik = rezerwujStolik();
+        String imie;
+
+
+        _kelner();
+
+        System.out.println("\n" +
+                ".---------------------------------------------.\n" +
+                "|         Jezeli bedziesz juz gotowy,         |\n" +
+                "| nacisnij Enter aby poprosic kelnera o menu. |\n" +
+                "'---------------------------------------------'");
+
+        pressAnyKeyToContinue();
+
+        koszyk.addAll(addItemsDoKosztka());
+        koszykstacjonar();
+
+        _zamow();
+        System.out.println("\n" +
+                ".-------------------.\n" +
+                "| Podaj swoje imie. |\n" +
+                "'-------------------'\n");
+
+        System.out.print("Wpisz:\n#");
+        imie = in.nextLine();
+
+
+        _koszyk();
+        showKoszyk(koszyk);
+        System.out.println("Dziekujemy!");
+        Address address = new Address("", "", "");
+        Customer customer = new Customer(imie, "", false, address, stolik);
+        newOrderRestaurant(customer, koszyk);
+        pressAnyKeyToContinue();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     }
+    public void koszykstacjonar() {
+
+        do {
+            flag = false;
+            _menu();
+            System.out.println("\n" +
+                    ".---------------------------------------.\n" +
+                    "| #1 Dodaj nastepne danie do zamowienia |\n" +
+                    "| #2 Pokaz aktualnie zamowione dania    |\n" +
+                    "| #3 Złóz zamowienie                    |\n" +
+                    "'---------------------------------------'\n");
+            userChoice = userInputNextInt("Wybierz:\n#");
+
+            switch (userChoice) {
+                case 1:
+                    koszyk.addAll(addItemsDoKosztka());
+                    koszykstacjonar();
+                    break;
+                case 2:
+                    _koszyk();
+                    showKoszyk(koszyk);
+                    pressAnyKeyToContinue();
+                    koszykstacjonar();
+                case 3:
+                    flag = true;
+                    break;
+                default:
+                    break;
+            }
 
 
+        } while (!flag);
+    }
     public int rezerwujStolik() {
         do {
             flag = false;
@@ -363,43 +395,82 @@ public class OrdersManage extends UserInterface {
         return userChoice;
     }
 
+    public static void sort() {
+
+        tableOrderstoCook = (ArrayList<Order>) currentOrders.stream()
+                .filter(order -> order.getStatus().equals(Status.REALIZACJA.toString()) &&
+                        !order.isDelivery).collect(Collectors.toList());
+
+        deliveryOrderstoCook = (ArrayList<Order>) currentOrders.stream()
+                .filter(order -> order.getStatus().equals(Status.REALIZACJA.toString()) &&
+                        order.isDelivery).collect(Collectors.toList());
+
+        tableOrderstoCook = (ArrayList<Order>) tableOrderstoCook.stream()
+                .sorted(Comparator.comparing(Order::getId)).collect(Collectors.toList());
+
+        deliveryOrderstoCook = (ArrayList<Order>) deliveryOrderstoCook.stream()
+                .sorted(Comparator.comparing(Order::getId)).collect(Collectors.toList());
 
 
 
 
 
-
+    }
 
 
 
     public static class Order {
 
         static AtomicInteger orderID = new AtomicInteger();
-        private int id;
-        private Calendar calendar = Calendar.getInstance();
-        private Date date;
-        private Customer customer;
-        private boolean isDelivery;
+        private final int id;
+
+        private final Date orderDate;
+
+        private HashMap <String, Date> daty;
+        private final Customer customer;
+        private final boolean isDelivery;
         private String status;
         private ArrayList <MenuManage.MenuItem> orderedItems;
+        private int table;
 
         public Order(boolean isDelivery, String status, Customer customer, ArrayList<MenuManage.MenuItem> orderedItems) {
-            this.date = calendar.getTime();
+
             id = orderID.incrementAndGet();
             this.customer = customer;
             this.isDelivery = isDelivery;
             this.status = status;
             this.orderedItems = orderedItems;
+            this.orderDate = new Date();
+            this.daty = new HashMap<>();
+            daty.put(Status.ORDERDATE.toString(), orderDate);
+            daty.put(Status.PREPARINGDATE.toString(), orderDate);
         }
 
 
+        public HashMap<String, Date> getDaty() {
+            return daty;
+        }
 
         public int getId() {
             return id;
         }
-        public Date getDate() {
-            return date;
+
+        public void setCookedDate(Date date) {
+            daty.put(Status.COOKDATE.toString(), date);
         }
+
+        public void setPreparingDate(Date date) {
+            daty.put(Status.PREPARINGDATE.toString(), date);
+        }
+        public void setDeliveredDate(Date date) {
+            daty.put(Status.DELIVERYDATE.toString(), date);
+        }
+
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
         public Customer getCustomer() {
             return customer;
         }
@@ -411,6 +482,9 @@ public class OrdersManage extends UserInterface {
         }
         public ArrayList<MenuManage.MenuItem> getOrderedItems() {
             return orderedItems;
+        }
+        public void setTable(int table) {
+            this.table = table;
         }
     }
 }

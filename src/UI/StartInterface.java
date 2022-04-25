@@ -1,5 +1,6 @@
 package UI;
 
+import Restauracja.Kitchen;
 import Restauracja.Tables;
 import Units.PersonelManage;
 import Units.MenuManage;

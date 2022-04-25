@@ -6,12 +6,12 @@ import Entities.DeliveryMan;
 import java.util.ArrayList;
 
 public class PersonelManage {
-    private final ArrayList <Chef> listaKucharzy;
-    private final ArrayList <DeliveryMan> listaDostawcow;
+    public static ArrayList <Chef> listaKucharzy;
+    public static ArrayList <DeliveryMan> listaDostawcow;
 
     public PersonelManage() {
-        this.listaDostawcow = new ArrayList<>();
-        this.listaKucharzy = new ArrayList<>();
+        listaDostawcow = new ArrayList<>();
+        listaKucharzy = new ArrayList<>();
     }
 
 

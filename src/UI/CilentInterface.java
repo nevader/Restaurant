@@ -2,8 +2,6 @@ package UI;
 
 import Units.OrdersManage;
 
-import java.util.Scanner;
-
 public class CilentInterface extends UserInterface{
 
     private final OrdersManage ordersManage;
@@ -29,12 +27,14 @@ public class CilentInterface extends UserInterface{
 
             switch (userChoice) {
                 case 1:
+                    ordersManage.clearKoszyk();
                     ordersManage.placeStacjonarne();
+                    jestemKlientem();
                     break;
 
                 case 2:
                     ordersManage.clearKoszyk();
-                    ordersManage.placeDeliveryOrder();
+                    ordersManage.deliveryMenu();
                     jestemKlientem();
                     break;
 

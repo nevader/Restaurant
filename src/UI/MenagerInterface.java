@@ -1,5 +1,6 @@
 package UI;
 
+import Units.OrdersManage;
 import Units.RestaurantManage;
 
 public class MenagerInterface extends UserInterface{
@@ -33,6 +34,7 @@ public class MenagerInterface extends UserInterface{
                     zarzadzajMenu();
                     break;
                 case 2:
+                    OrdersManage.sort();
                     System.out.println("zamowienia");
                     restaurantManage.printOrders();
                     pressAnyKeyToContinue();
