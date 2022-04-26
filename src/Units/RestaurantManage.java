@@ -1,18 +1,17 @@
 package Units;
 
 import Enums.Status;
-import Restauracja.Kitchen;
 import UI.UserInterface;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class RestaurantManage extends UserInterface {
 
     private final DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-    private final Kitchen kitchen = new Kitchen();
 
     public void addItem() {
 
@@ -198,26 +197,40 @@ public class RestaurantManage extends UserInterface {
 
     public void printOrders() {
 
-        kitchen.cook();
-
         _zamowienia();
 
-
-        System.out.println("\nRestaurant orders - Cooking \n######################################");
+        System.out.println("Current time: " + dateFormat.format(new Date().getTime()));
         for (int i = 0; i < OrdersManage.currentOrders.size(); i++) {
-            if (OrdersManage.currentOrders.get(i).getDaty().get(Status.COOKDATE.toString()) != null) {
-                System.out.println("ID #" + OrdersManage.currentOrders.get(i).getId() +
-                        "\nOrder time: " + dateFormat.format(OrdersManage.currentOrders.get(i).getDaty().get(Status.ORDERDATE.toString())) +
-                        "\nStarted preparing at: " + dateFormat.format(OrdersManage.currentOrders.get(i).getDaty().get(Status.PREPARINGDATE.toString())) +
-                        "\nFinished cooking at: " + dateFormat.format(OrdersManage.currentOrders.get(i).getDaty().get(Status.COOKDATE.toString())) +
-                        "\n######################################\n");
-            } else {
-                System.out.println("ID #" + OrdersManage.currentOrders.get(i).getId() +
-                        "\nOrder time: " + dateFormat.format(OrdersManage.currentOrders.get(i).getDaty().get(Status.ORDERDATE.toString())) +
-                        "\nStarted preparing at: " + dateFormat.format(OrdersManage.currentOrders.get(i).getDaty().get(Status.PREPARINGDATE.toString())) +
-                        "\n######################################\n");
-            }
+            int id = OrdersManage.currentOrders.get(i).getId();
+            String isDelivery = OrdersManage.currentOrders.get(i).isDelivery() ? "przez portal" : "w restauracji";
+            long orderedtime = OrdersManage.currentOrders.get(i).getDaty().get(Status.ORDERDATE.toString()).getTime();
+            long startedCooking = OrdersManage.currentOrders.get(i).getDaty().get(Status.STARTEDCOOKING.toString())
+                    == null ? 0 : OrdersManage.currentOrders.get(i).getDaty().get(Status.STARTEDCOOKING.toString())
+                    .getTime();
+            long finishedCooking = OrdersManage.currentOrders.get(i).getDaty().get(Status.FINISHEDCOOKING.toString())
+                    == null ? 0 : OrdersManage.currentOrders.get(i).getDaty().get(Status.FINISHEDCOOKING.toString())
+                    .getTime();
+            long startedDelivery = OrdersManage.currentOrders.get(i).getDaty().get(Status.STARTEDDELIVERING.toString())
+                    == null ? 0 : OrdersManage.currentOrders.get(i).getDaty().get(Status.STARTEDDELIVERING.toString())
+                    .getTime();
+            long finishedDelivery = OrdersManage.currentOrders.get(i).getDaty().get(Status.DELIVEREDDATE.toString())
+                    == null ? 0 : OrdersManage.currentOrders.get(i).getDaty().get(Status.DELIVEREDDATE.toString())
+                    .getTime();
+
+
+            System.out.println("\n#########################\n" +
+                    "ID #" + id + " |" + isDelivery + "|\n" +
+                    "Godzine złożenia zamowienia: " + dateFormat.format(orderedtime) + "\n" +
+                    "Godzina zaczecia przyzadzania dania: " + dateFormat.format(startedCooking) + "\n" +
+                    "Godzina ukonczenia przyzadzania dania: " + dateFormat.format(finishedCooking) + "\n" +
+                    "Godzina rozpoczecia dostawy: "  + dateFormat.format(startedDelivery) + "\n" +
+                    "Godzina dostarczenia zamowienia: " + dateFormat.format(finishedDelivery));
         }
+        System.out.println("#########################\n");
+        System.out.println("table cook" + OrdersManage.tableOrderstoCook);
+        System.out.println("delivery cook" +OrdersManage.deliveryOrderstoCook);
+        System.out.println("table place" +OrdersManage.tableOrderstoPlace);
+        System.out.println("delivery place" +OrdersManage.deliveryOrderstoPlace);
         }
 
 

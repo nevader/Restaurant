@@ -34,7 +34,7 @@ public class MenagerInterface extends UserInterface{
                     zarzadzajMenu();
                     break;
                 case 2:
-                    OrdersManage.sort();
+                    OrdersManage.startProcess();
                     System.out.println("zamowienia");
                     restaurantManage.printOrders();
                     pressAnyKeyToContinue();

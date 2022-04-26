@@ -1,10 +1,12 @@
 package Units;
 
+import Entities.DeliveryMan;
 import Enums.Status;
 import UI.UserInterface;
 import DataTypes.Address;
 import Entities.Customer;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -12,15 +14,11 @@ import java.util.stream.Collectors;
 public class OrdersManage extends UserInterface {
 
     public static ArrayList <Order> currentOrders;
-
     public static ArrayList <Order> deliveryOrderstoCook;
     public static ArrayList <Order> tableOrderstoCook;
-
     public static ArrayList <Order> deliveryOrderstoPlace;
     public static ArrayList <Order> tableOrderstoPlace;
-
     public static ArrayList <Order> completedOrders;
-
     private final ArrayList <MenuManage.MenuItem> koszyk = new ArrayList<>();
 
     public OrdersManage() {
@@ -31,9 +29,6 @@ public class OrdersManage extends UserInterface {
         deliveryOrderstoPlace = new ArrayList<>();
         tableOrderstoPlace = new ArrayList<>();
     }
-
-
-
 
 
     /*Delivery*/
@@ -169,6 +164,7 @@ public class OrdersManage extends UserInterface {
 
 
         newOrderDelivery(customer, koszyk);
+        startProcess();
         pressAnyKeyToContinue();
 
     }
@@ -271,6 +267,7 @@ public class OrdersManage extends UserInterface {
         Address address = new Address("", "", "");
         Customer customer = new Customer(imie, "", false, address, stolik);
         newOrderRestaurant(customer, koszyk);
+        startProcess();
         pressAnyKeyToContinue();
 
 
@@ -395,7 +392,39 @@ public class OrdersManage extends UserInterface {
         return userChoice;
     }
 
+    public static void startProcess() {
+        sort();
+        cook();
+        sort();
+        delivery();
+        sort();
+    }
+
+
+
+    public static double tipCalculate (Date start, Date finish, ArrayList<Order> orders) {
+        long totalTime = finish.getTime() - start.getTime();
+        double totalprice = 0;
+        double maxTipValue;
+        long fiftenmin = 900_000;
+
+        for (int i = 0; i < orders.size(); i++) {
+            totalprice += orders.get(0).getOrderedItems().get(i).getPrice();
+        }
+
+        maxTipValue = totalprice * (10.0/100.0);
+        //(double)(fiftenmin/totalTime) * 2
+        if ((double)(fiftenmin/totalTime) * 2 > maxTipValue) {
+            return maxTipValue;
+        } else {
+            return (double)(fiftenmin/totalTime) * 2;
+        }
+
+
+    }
     public static void sort() {
+
+        /*zwolnienie stolika*/
 
         tableOrderstoCook = (ArrayList<Order>) currentOrders.stream()
                 .filter(order -> order.getStatus().equals(Status.REALIZACJA.toString()) &&
@@ -411,13 +440,153 @@ public class OrdersManage extends UserInterface {
         deliveryOrderstoCook = (ArrayList<Order>) deliveryOrderstoCook.stream()
                 .sorted(Comparator.comparing(Order::getId)).collect(Collectors.toList());
 
+        PersonelManage.listaDostawcow = (ArrayList<DeliveryMan>) PersonelManage.listaDostawcow.stream()
+                .sorted(Comparator.comparing(DeliveryMan::getOrdersToDeliverySize)).collect(Collectors.toList());
 
+        while (!deliveryOrderstoPlace.isEmpty()) {
+            PersonelManage.listaDostawcow.get(0).ordersToDelivery.add(deliveryOrderstoPlace.get(0));
+            deliveryOrderstoPlace.remove(0);
+            sort();
+        }
+
+    }
+    public static void cook() {
+        final long prepareTime = 3000;
+        long startedPraparing;
+        long currentTime;
+        long finisTime;
+
+        if (!OrdersManage.tableOrderstoCook.isEmpty()) {
+            if (OrdersManage.tableOrderstoCook.get(0)
+                    .getDaty().get(Status.STARTEDCOOKING.toString()) == null) {
+
+                startedPraparing = OrdersManage.tableOrderstoCook.get(0)
+                        .getDaty().get(Status.ORDERDATE.toString()).getTime();
+
+                OrdersManage.tableOrderstoCook.get(0)
+                        .getDaty().put(Status.STARTEDCOOKING.toString(),
+                                OrdersManage.tableOrderstoCook.get(0).getDaty().get(Status
+                                        .ORDERDATE.toString()));
+            } else {
+                startedPraparing = OrdersManage.tableOrderstoCook.get(0)
+                        .getDaty().get(Status.STARTEDCOOKING.toString()).getTime();
+            }
+
+            currentTime = new Date().getTime();
+
+            finisTime = ((OrdersManage.tableOrderstoCook.get(0).getOrderedItems().size() * prepareTime) /
+                    PersonelManage.listaKucharzy.size()) + startedPraparing;
+
+            if (currentTime > finisTime) {
+                OrdersManage.tableOrderstoCook.get(0).setStatus(Status.GOTOWE.toString());
+                OrdersManage.tableOrderstoCook.get(0).setCookedDate(new Date(finisTime));
+                OrdersManage.tableOrderstoPlace.add(OrdersManage.tableOrderstoCook.get(0));
+                OrdersManage.tableOrderstoCook.remove(0);
+
+                if (!OrdersManage.tableOrderstoCook.isEmpty()) {
+                    OrdersManage.tableOrderstoCook.get(0).setSTARTEDCOOKING(new Date(finisTime));
+                }
+
+            }
+        }
+
+        if (!OrdersManage.deliveryOrderstoCook.isEmpty() && OrdersManage.tableOrderstoCook.isEmpty()) {
+            if (OrdersManage.deliveryOrderstoCook.get(0)
+                    .getDaty().get(Status.STARTEDCOOKING.toString()) == null) {
+
+                startedPraparing = OrdersManage.deliveryOrderstoCook.get(0)
+                        .getDaty().get(Status.ORDERDATE.toString()).getTime();
+
+                OrdersManage.deliveryOrderstoCook.get(0)
+                        .getDaty().put(Status.STARTEDCOOKING.toString(),
+                                OrdersManage.deliveryOrderstoCook.get(0)
+                                        .getDaty().get(Status.ORDERDATE.toString()));
+            } else {
+                startedPraparing = OrdersManage.deliveryOrderstoCook.get(0)
+                        .getDaty().get(Status.STARTEDCOOKING.toString()).getTime();
+            }
+
+            currentTime = new Date().getTime();
+
+            finisTime = ((OrdersManage.deliveryOrderstoCook.get(0).getOrderedItems().size() * prepareTime) /
+                    PersonelManage.listaKucharzy.size()) + startedPraparing;
+
+            if (currentTime > finisTime) {
+                OrdersManage.deliveryOrderstoCook.get(0).setStatus(Status.GOTOWE.toString());
+                OrdersManage.deliveryOrderstoCook.get(0).setCookedDate(new Date(finisTime));
+                OrdersManage.deliveryOrderstoPlace.add(OrdersManage.deliveryOrderstoCook.get(0));
+                OrdersManage.deliveryOrderstoCook.remove(0);
+                if (!OrdersManage.deliveryOrderstoCook.isEmpty()) {
+                    OrdersManage.deliveryOrderstoCook.get(0).setSTARTEDCOOKING(new Date(finisTime));
+                }
+
+            }
+        }
 
 
 
     }
+    public static void delivery() {
+        long deliverytime = 5000;
+
+        long starteddelivery;
+        long currenttime;
+        long finishtime;
+
+        for (int i = 0; i < PersonelManage.listaDostawcow.size(); i++) {
+            if (!PersonelManage.listaDostawcow.get(i).ordersToDelivery.isEmpty()) {
+                PersonelManage.listaDostawcow.get(i).ordersToDelivery =
+                        (ArrayList<Order>) PersonelManage.listaDostawcow.get(i).ordersToDelivery.stream()
+                                .sorted(Comparator.comparing
+                                        (Order -> Order.getDaty().get(Status.FINISHEDCOOKING.toString()).getTime()))
+                                .collect(Collectors.toList());
 
 
+                if (PersonelManage.listaDostawcow.get(i).ordersToDelivery.get(0).getDaty()
+                        .get(Status.STARTEDDELIVERING.toString()) == null) {
+                    starteddelivery = PersonelManage.listaDostawcow.get(i).ordersToDelivery.get(0)
+                            .getDaty().get(Status.FINISHEDCOOKING.toString()).getTime();
+                } else {
+                    starteddelivery = PersonelManage.listaDostawcow.get(i).ordersToDelivery.get(0)
+                            .getDaty().get(Status.STARTEDDELIVERING.toString()).getTime();
+                }
+
+                currenttime = new Date().getTime();
+
+                finishtime = starteddelivery + deliverytime;
+
+                if (currenttime > finishtime) {
+
+                    PersonelManage.listaDostawcow.get(i).ordersToDelivery.get(0)
+                            .setDeliveredDate(new Date(finishtime));
+
+/*                    PersonelManage.listaDostawcow.get(i).setTips(tipCalculate(PersonelManage.listaDostawcow.get(i).ordersToDelivery.get(0)
+                                    .getDaty().get(Status.FINISHEDCOOKING.toString()),
+                            PersonelManage.listaDostawcow.get(i).ordersToDelivery
+                                    .get(0).getDaty().get(Status.DELIVEREDDATE.toString()),
+                            PersonelManage.listaDostawcow.get(i).getOrdersToDelivery()));*/
+
+                    PersonelManage.listaDostawcow.get(i).ordersToDelivery.get(0)
+                            .setStatus(Status.DOSTARCZONE.toString());
+
+
+
+                    PersonelManage.listaDostawcow.get(i).deliveredCountIncrease();
+
+
+                    completedOrders.add(PersonelManage.listaDostawcow.get(i).ordersToDelivery.get(0));
+
+                    PersonelManage.listaDostawcow.get(i).ordersToDelivery.remove(0);
+
+                    if (!PersonelManage.listaDostawcow.get(i).ordersToDelivery.isEmpty()) {
+                        PersonelManage.listaDostawcow.get(i).ordersToDelivery.get(0)
+                                .setStartingDelivery(new Date(finishtime));
+                    }
+                }
+
+            }
+        }
+    }
 
     public static class Order {
 
@@ -430,7 +599,7 @@ public class OrdersManage extends UserInterface {
         private final Customer customer;
         private final boolean isDelivery;
         private String status;
-        private ArrayList <MenuManage.MenuItem> orderedItems;
+        private final ArrayList <MenuManage.MenuItem> orderedItems;
         private int table;
 
         public Order(boolean isDelivery, String status, Customer customer, ArrayList<MenuManage.MenuItem> orderedItems) {
@@ -442,8 +611,10 @@ public class OrdersManage extends UserInterface {
             this.orderedItems = orderedItems;
             this.orderDate = new Date();
             this.daty = new HashMap<>();
+
             daty.put(Status.ORDERDATE.toString(), orderDate);
-            daty.put(Status.PREPARINGDATE.toString(), orderDate);
+
+
         }
 
 
@@ -456,15 +627,19 @@ public class OrdersManage extends UserInterface {
         }
 
         public void setCookedDate(Date date) {
-            daty.put(Status.COOKDATE.toString(), date);
+            daty.put(Status.FINISHEDCOOKING.toString(), date);
         }
 
-        public void setPreparingDate(Date date) {
-            daty.put(Status.PREPARINGDATE.toString(), date);
+        public void setSTARTEDCOOKING(Date date) {
+            daty.put(Status.STARTEDCOOKING.toString(), date);
         }
         public void setDeliveredDate(Date date) {
-            daty.put(Status.DELIVERYDATE.toString(), date);
+            daty.put(Status.DELIVEREDDATE.toString(), date);
         }
+        public void setStartingDelivery(Date date) {
+            daty.put(Status.STARTEDDELIVERING.toString(), date);
+        }
+
 
 
         public void setStatus(String status) {

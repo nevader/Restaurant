@@ -6,9 +6,10 @@ public enum Status {
     DOSTARCZONE(4),
 
     ORDERDATE(5),
-    PREPARINGDATE(6),
-    COOKDATE(7),
-    DELIVERYDATE(8);
+    STARTEDCOOKING(6),
+    FINISHEDCOOKING(7),
+    STARTEDDELIVERING(8),
+    DELIVEREDDATE(9);
 
 
     public final int status;
