@@ -149,7 +149,7 @@ public class RestaurantManage extends UserInterface {
 
     }
 
-    public void removeItem() {
+    public void removeMenuItem() {
 
         _usunDanie();
 
@@ -181,7 +181,7 @@ public class RestaurantManage extends UserInterface {
                 switch (userChoice) {
                     case 1:
                         flag = true;
-                        removeItem();
+                        removeMenuItem();
                         break;
                     case 0:
                         flag = true;
@@ -201,6 +201,7 @@ public class RestaurantManage extends UserInterface {
 
         System.out.println("Current time: " + dateFormat.format(new Date().getTime()));
         for (int i = 0; i < OrdersManage.currentOrders.size(); i++) {
+            String status = OrdersManage.currentOrders.get(i).getStatus();
             int id = OrdersManage.currentOrders.get(i).getId();
             String isDelivery = OrdersManage.currentOrders.get(i).isDelivery() ? "przez portal" : "w restauracji";
             long orderedtime = OrdersManage.currentOrders.get(i).getDaty().get(Status.ORDERDATE.toString()).getTime();
@@ -216,25 +217,30 @@ public class RestaurantManage extends UserInterface {
             long finishedDelivery = OrdersManage.currentOrders.get(i).getDaty().get(Status.DELIVEREDDATE.toString())
                     == null ? 0 : OrdersManage.currentOrders.get(i).getDaty().get(Status.DELIVEREDDATE.toString())
                     .getTime();
+            long canceledDate = OrdersManage.currentOrders.get(i).getDaty().get(Status.ANULOWANE.toString())
+                    == null ? 0 : OrdersManage.currentOrders.get(i).getDaty().get(Status.ANULOWANE.toString())
+                    .getTime() + OrdersManage.expiredOrder;
+            long expiredOrder = OrdersManage.currentOrders.get(i).getDaty().get(Status.PRZEDAWNIONE.toString())
+                    == null ? 0 : OrdersManage.currentOrders.get(i).getDaty().get(Status.PRZEDAWNIONE.toString())
+                    .getTime() + OrdersManage.expiredOrder;
 
 
             System.out.println("\n#########################\n" +
-                    "ID #" + id + " |" + isDelivery + "|\n" +
+                    "ID #" + id + " |" + isDelivery + "| Status: " + status + "\n" +
                     "Godzine złożenia zamowienia: " + dateFormat.format(orderedtime) + "\n" +
                     "Godzina zaczecia przyzadzania dania: " + dateFormat.format(startedCooking) + "\n" +
                     "Godzina ukonczenia przyzadzania dania: " + dateFormat.format(finishedCooking) + "\n" +
-                    "Godzina rozpoczecia dostawy: "  + dateFormat.format(startedDelivery) + "\n" +
-                    "Godzina dostarczenia zamowienia: " + dateFormat.format(finishedDelivery));
+                    "Godzina rozpoczecia dostawy: " + dateFormat.format(startedDelivery) + "\n" +
+                    "Godzina dostarczenia zamowienia: " + dateFormat.format(finishedDelivery) + "\n" +
+                    "Godzina anulownia zamowienia: " + dateFormat.format(canceledDate) + "\n" +
+                    "Godzina przeterminowania zamowienia: " + dateFormat.format(expiredOrder));
         }
         System.out.println("#########################\n");
         System.out.println("table cook" + OrdersManage.tableOrderstoCook);
-        System.out.println("delivery cook" +OrdersManage.deliveryOrderstoCook);
-        System.out.println("table place" +OrdersManage.tableOrderstoPlace);
-        System.out.println("delivery place" +OrdersManage.deliveryOrderstoPlace);
-        }
-
-
-
+        System.out.println("delivery cook" + OrdersManage.deliveryOrderstoCook);
+        System.out.println("table place" + OrdersManage.tableOrderstoPlace);
+        System.out.println("delivery place" + OrdersManage.deliveryOrderstoPlace);
+    }
 
 
     /*Personel*/
@@ -243,15 +249,15 @@ public class RestaurantManage extends UserInterface {
         Scanner in = new Scanner(System.in);
         System.out.println(
                 "\n.-------------------------------.\n" +
-                "| Podaj imię nowego pracownika: |\n" +
-                "'-------------------------------'\n");
+                        "| Podaj imię nowego pracownika: |\n" +
+                        "'-------------------------------'\n");
         System.out.println("Wpisz:");
         System.out.print("#");
         String imie = in.nextLine();
 
         _nowyPracownik();
         System.out.println(
-                      "\n.-----------------------------------------.\n" +
+                "\n.-----------------------------------------.\n" +
                         "| Podaj numer telefonu nowego pracownika: |\n" +
                         "'-----------------------------------------'\n");
         System.out.println("Wpisz:");
@@ -298,4 +304,121 @@ public class RestaurantManage extends UserInterface {
 
     }
 
-}
+
+    public void fireEmploye() {
+
+        _zwolnijPracownika();
+
+        System.out.println();
+        for (int i = 0; i < PersonelManage.listaKucharzy.size(); i++) {
+            System.out.println("######| KUCHARZ |######");
+            System.out.println("ID #" + PersonelManage.listaKucharzy.get(i).getId() + ", " +
+                    "Imię: " + PersonelManage.listaKucharzy.get(i).getName());
+            System.out.println("#######################\n");
+        }
+
+        for (int i = 0; i < PersonelManage.listaDostawcow.size(); i++) {
+            System.out.println("######| DOSTAWCA |######");
+            System.out.println("ID #" + PersonelManage.listaDostawcow.get(i).getId() + ", " +
+                    "Imię: " + PersonelManage.listaDostawcow.get(i).getName());
+            System.out.println("########################\n");
+        }
+
+        System.out.print(
+                ".--------------------------------------------.\n" +
+                "| Wybierz pracownika ktorego chcesz zwolnic. |\n" +
+                "| Wpisz #ID które jest do niego przypisane.  |\n" +
+                "'--------------------------------------------'\n");
+        System.out.print("#0 Cofnij\n");
+
+        userChoice = userInputNextInt("\nWybierz opcje: \n#");
+
+        if (userChoice == 0) {
+            return;
+        }
+
+        boolean removed = chooseEmployeToFire(userChoice);
+
+        if (removed) {
+            System.out.println(
+                            ".---------------------------------.\n" +
+                            "| #1 Zwolnij kolejnego pracownika |\n" +
+                            "| #0 Cofnij                       |\n" +
+                            "'---------------------------------'\n");
+
+            do {
+                userChoice = userInputNextInt("Wybierz opcje: \n#");
+                switch (userChoice) {
+                    case 1:
+                        flag = true;
+                        fireEmploye();
+                        break;
+                    case 0:
+                        flag = true;
+                        return;
+                    default:
+                        wybierzPoprawna();
+                        break;
+                }
+            } while (!flag);
+        }
+
+    }
+
+    public boolean chooseEmployeToFire(int id) {
+
+        String eployeName = "";
+
+        for (int i = 0; i < PersonelManage.listaDostawcow.size(); i++) {
+            if (PersonelManage.listaDostawcow.get(i).getId() == id) {
+                eployeName = PersonelManage.listaDostawcow.get(i).getName();
+            }
+        }
+
+        for (int i = 0; i < PersonelManage.listaKucharzy.size(); i++) {
+            if (PersonelManage.listaKucharzy.get(i).getId() == id) {
+                eployeName = PersonelManage.listaKucharzy.get(i).getName();
+            }
+        }
+
+
+        if (PersonelManage.listaKucharzy.stream().anyMatch(employee -> employee.getId() == id)) {
+            if (PersonelManage.listaKucharzy.size() == 1) {
+                _zwolnijPracownika();
+                System.out.print("\n" +
+                                ".-----------------------------------------.\n" +
+                                "| Nie mozesz zwolnic ostatniego kucharza! |\n" +
+                                "'-----------------------------------------'\n");
+                pressAnyKeyToContinue();
+                return false;
+            } else if (PersonelManage.listaKucharzy.removeIf(employee -> employee.getId() == id)) {
+                System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+                _zwolnijPracownika();
+                System.out.println("\nZwolniles:\n" + "#" + id + " | " + eployeName + "| Kucharz");
+
+                return true;
+            }
+        }
+
+        if (PersonelManage.listaDostawcow.stream().anyMatch(employee -> employee.getId() == id)) {
+            if (PersonelManage.listaDostawcow.size() == 1) {
+                _zwolnijPracownika();
+                System.out.print("\n" +
+                                ".-----------------------------------------.\n" +
+                                "| Nie mozesz zwolnic ostatniego dostawcy! |\n" +
+                                "'-----------------------------------------'\n");
+                pressAnyKeyToContinue();
+                return false;
+            } else if (PersonelManage.listaDostawcow.removeIf(employee -> employee.getId() == id)) {
+                System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+                _zwolnijPracownika();
+                System.out.println("\nZwolniles:\n" + "#" + id + " | " + eployeName + "| Dostawca");
+
+                return true;
+            }
+        }
+
+        return false;
+
+        }
+    }

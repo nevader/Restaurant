@@ -114,7 +114,7 @@ public class MenagerInterface extends UserInterface{
                     zarzadzajDaniami();
                     break;
                 case 2:
-                    restaurantManage.removeItem();
+                    restaurantManage.removeMenuItem();
                     zarzadzajDaniami();
                     break;
                 case 3:
@@ -162,6 +162,8 @@ public class MenagerInterface extends UserInterface{
                     zarzadzajPersonelem();
                     break;
                 case 2:
+                    restaurantManage.fireEmploye();
+                    zarzadzajPersonelem();
                     break;
                 case 3:
                     personelManage.printListaPracownikow();

@@ -5,25 +5,25 @@ import Units.OrdersManage;
 
 import java.util.ArrayList;
 
-public class DeliveryMan extends Person.Employee {
+public class Waiter extends Person.Employee {
 
     private double tips = 0;
     private boolean isAvalible;
     private int deliveredCount = 0;
-    public ArrayList <OrdersManage.Order> ordersToDelivery;
+    public ArrayList <OrdersManage.Order> ordersToPlace;
 
-    public DeliveryMan(String name, String phone) {
+    public Waiter(String name, String phone) {
         super(name, phone);
-        this.ordersToDelivery = new ArrayList<>();
+        this.ordersToPlace = new ArrayList<>();
 
     }
 
-    public ArrayList<OrdersManage.Order> getOrdersToDelivery() {
-        return ordersToDelivery;
+    public ArrayList<OrdersManage.Order> getOrdersToPlace() {
+        return ordersToPlace;
     }
 
-    public int getOrdersToDeliverySize() {
-      return ordersToDelivery.size();
+    public int getOrdersToPlaceSize() {
+        return ordersToPlace.size();
     }
 
     public void setTips(double tips) {
