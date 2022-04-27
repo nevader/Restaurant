@@ -13,7 +13,6 @@ public enum Status {
     STARTEDDELIVERING(8),
     DELIVEREDDATE(9);
 
-
     public final int status;
 
     Status(int status) {

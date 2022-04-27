@@ -18,9 +18,6 @@ public class DeliveryMan extends Person.Employee {
 
     }
 
-    public ArrayList<OrdersManage.Order> getOrdersToDelivery() {
-        return ordersToDelivery;
-    }
 
     public int getOrdersToDeliverySize() {
       return ordersToDelivery.size();
@@ -30,16 +27,8 @@ public class DeliveryMan extends Person.Employee {
         this.tips += tips;
     }
 
-    public void setAvalible(boolean avalible) {
-        isAvalible = avalible;
-    }
-
     public double getTips() {
         return tips;
-    }
-
-    public boolean isAvalible() {
-        return isAvalible;
     }
 
     public int getDeliveredCount() {

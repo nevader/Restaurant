@@ -9,8 +9,8 @@ public class StartInterface extends UserInterface{
     public final static MenuManage MANAGE_MENU = new MenuManage();
     public final static PersonelManage MANAGE_PERSONEL = new PersonelManage();
     public final static Tables tables = new Tables();
-    private CilentInterface cilentInterface;
-    private MenagerInterface menagerInterface;
+    private final CilentInterface cilentInterface;
+    private final MenagerInterface menagerInterface;
 
 
     public StartInterface() {

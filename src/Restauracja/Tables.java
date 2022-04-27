@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 public class Tables {
 
-    private ArrayList <Table> tableArrayList;
-    private Table table1;
-    private Table table2;
-    private Table table3;
-    private Table table4;
+    private final ArrayList <Table> tableArrayList;
+    private final Table table1;
+    private final Table table2;
+    private final Table table3;
+    private final Table table4;
 
     private final String[][] tables = {
             {"╔══════════════", "═══|▓▓▓▓|═══", "══════════════╗"},
@@ -43,10 +43,6 @@ public class Tables {
         setTableAvalible(4);
     }
 
-    public ArrayList<Table> getTableArrayList() {
-        return tableArrayList;
-    }
-
     public Table getTable1() {
         return table1;
     }
@@ -61,10 +57,6 @@ public class Tables {
 
     public Table getTable4() {
         return table4;
-    }
-
-    public String[][] getTables() {
-        return tables;
     }
 
     public void printTables() {

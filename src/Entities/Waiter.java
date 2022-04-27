@@ -18,9 +18,6 @@ public class Waiter extends Person.Employee {
 
     }
 
-    public ArrayList<OrdersManage.Order> getOrdersToPlace() {
-        return ordersToPlace;
-    }
 
     public int getOrdersToPlaceSize() {
         return ordersToPlace.size();
@@ -28,22 +25,6 @@ public class Waiter extends Person.Employee {
 
     public void setTips(double tips) {
         this.tips += tips;
-    }
-
-    public void setAvalible(boolean avalible) {
-        isAvalible = avalible;
-    }
-
-    public double getTips() {
-        return tips;
-    }
-
-    public boolean isAvalible() {
-        return isAvalible;
-    }
-
-    public int getDeliveredCount() {
-        return deliveredCount;
     }
 
     public void deliveredCountIncrease() {
