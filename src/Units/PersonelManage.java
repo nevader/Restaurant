@@ -35,15 +35,15 @@ public class PersonelManage {
     public void printListaPracownikow() {
 
         System.out.println("Kucharze: ");
-        for (int i = 0; i < listaKucharzy.size(); i++) {
-            System.out.println(listaKucharzy.get(i).getName());
+        for (Chef chef : listaKucharzy) {
+            System.out.println(chef.getName());
         }
 
         System.out.println("Dostawcy: ");
-        for (int i = 0; i < listaDostawcow.size(); i++) {
-            System.out.println("imie:" + listaDostawcow.get(i).getName());
-            System.out.println("ilosc dostarcznonych zamowien: #" +listaDostawcow.get(i).getDeliveredCount());
-            System.out.println("łączne napiwki: " + listaDostawcow.get(i).getTips());
+        for (DeliveryMan deliveryMan : listaDostawcow) {
+            System.out.println("imie:" + deliveryMan.getName());
+            System.out.println("ilosc dostarcznonych zamowien: #" + deliveryMan.getDeliveredCount());
+            System.out.println("łączne napiwki: " + deliveryMan.getTips());
         }
     }
 
