@@ -35,9 +35,7 @@ public class MenagerInterface extends UserInterface{
                     break;
                 case 2:
                     OrdersManage.startProcess();
-                    System.out.println("zamowienia");
-                    restaurantManage.printOrders();
-                    pressAnyKeyToContinue();
+                    zarzadzajZamowieniami();
                     manageRestaurant();
                     break;
                 case 3:
@@ -102,9 +100,10 @@ public class MenagerInterface extends UserInterface{
                 ".----------------------------------.\n" +
                 "| #1 Dodaj nowe danie              |\n" +
                 "| #2 Usun danie                    |\n" +
-                "| #3 Zapisz menu w pliku           |\n" +
-                "| #4 Wczytaj menu z pliku          |\n" +
-                "| #5 Wyswietl liste wszystkich dań |\n" +
+                "| #3 Zmien status dania            |\n" +
+                "| #4 Zapisz menu w pliku           |\n" +
+                "| #5 Wczytaj menu z pliku          |\n" +
+                "| #6 Wyswietl liste wszystkich dań |\n" +
                 "| #0 Cofnij                        |\n" +
                 "'----------------------------------'\n");
 
@@ -122,13 +121,17 @@ public class MenagerInterface extends UserInterface{
                     zarzadzajDaniami();
                     break;
                 case 3:
-                    menuManage.saveMenuItemsToFile();
+                    restaurantManage.changeItemStatus();
                     zarzadzajDaniami();
                     break;
                 case 4:
+                    menuManage.saveMenuItemsToFile();
+                    zarzadzajDaniami();
+                     break;
+                case 5:
                     menuManage.loadMenuItemsFromFile();
                     break;
-                case 5:
+                case 6:
                     _dania();
                     menuManage.printMenuItems();
                     pressAnyKeyToContinue();
@@ -143,6 +146,44 @@ public class MenagerInterface extends UserInterface{
             }
         } while (!flag);
 
+    }
+    public void zarzadzajZamowieniami() {
+
+        _zamowienia();
+        System.out.println("\n"+
+                ".----------------------------.\n" +
+                "| #1 Zrealizowane zamowienia |\n" +
+                "| #2 Oczekujace zamowienia   |\n" +
+                "| #3 Wszystkie zamowienia    |\n" +
+                "| #0 Cofnij                  |\n" +
+                "'----------------------------'\n");
+
+        do {
+            userChoice = userInputNextInt("Wybierz opcje: \n#");
+            flag = false;
+            switch (userChoice) {
+                case 1:
+                    OrdersManage.startProcess();
+                    restaurantManage.printCompletedOrders();
+                    pressAnyKeyToContinue();
+                    zarzadzajZamowieniami();
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    OrdersManage.startProcess();
+                    restaurantManage.printOrders();
+                    pressAnyKeyToContinue();
+                    zarzadzajZamowieniami();
+                    break;
+                case 0:
+                    flag = true;
+                    manageRestaurant();
+                    break;
+                default:
+                    wybierzPoprawna();
+            }
+        } while (!flag);
     }
     public void zarzadzajPersonelem() {
 

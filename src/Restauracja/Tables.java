@@ -134,7 +134,7 @@ public class Tables {
 
 
 
-    public class Table {
+    public static class Table {
 
 
         private boolean avalible;

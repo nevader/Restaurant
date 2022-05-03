@@ -1,15 +1,12 @@
 package Units;
 
-import Entities.Waiter;
 import Enums.Status;
 import UI.UserInterface;
 
-import java.awt.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.InputMismatchException;
-import java.util.Locale;
 import java.util.Scanner;
 
 public class RestaurantManage extends UserInterface {
@@ -177,6 +174,49 @@ public class RestaurantManage extends UserInterface {
         }
 
     }
+    public void changeItemStatus() {
+        _zmienstatus();
+
+        System.out.print("\n" +
+                ".---------------------------------------------.\n" +
+                "| Wybierz danie ktorego status chcesz zmienic |\n" +
+                "| Wpisz liczbę która jest do niego przypisana |\n" +
+                "'---------------------------------------------'");
+        menuManage.printMenuItems();
+        System.out.print("#0 Cofnij\n");
+
+        userChoice = userInputNextInt("\nWybierz opcje: \n#");
+
+        if (userChoice == 0) {
+            return;
+        }
+
+        boolean removed = menuManage.changeStatus(userChoice);
+
+        if (removed) {
+            System.out.println(
+                            ".------------------.\n" +
+                            "| #1 Zmien kolejny |\n" +
+                            "| #0 Cofnij        |\n" +
+                            "'------------------'\n");
+
+            do {
+                userChoice = userInputNextInt("Wybierz opcje: \n#");
+                switch (userChoice) {
+                    case 1:
+                        flag = true;
+                        changeItemStatus();
+                        break;
+                    case 0:
+                        flag = true;
+                        return;
+                    default:
+                        wybierzPoprawna();
+                        break;
+                }
+            } while (!flag);
+        }
+    }
 
     public void printOrders() {
 
@@ -236,6 +276,24 @@ public class RestaurantManage extends UserInterface {
                     + PersonelManage.listaDostawcow.get(i).getOrdersToDelivery());
         }
 
+    }
+    public void printCompletedOrders() {
+        for (int i = 0; i < OrdersManage.completedOrders.size(); i++) {
+            System.out.print("|ID #" + OrdersManage.completedOrders.get(i).getId() + "|");
+            System.out.print(OrdersManage.completedOrders.get(i).isDelivery() ? " |W dostawie| " : " |W lokalu| ");
+
+            if (OrdersManage.completedOrders.get(i).getDaty().get(Status.PRZEDAWNIONE.toString()) != null) {
+                System.out.printf(" |$%,.2f| (20%% znizki)\n", OrdersManage.completedOrders.get(i).getTotalPrice());
+            } else {
+                System.out.printf(" |$%,.2f|\n", OrdersManage.completedOrders.get(i).getTotalPrice());
+            }
+            System.out.println("Godzina złozenia zamowienia: " + dateFormat.format(OrdersManage.completedOrders.get(i)
+                    .getDaty().get(Status.ORDERDATE.toString()).getTime()));
+            System.out.println("Godzina dostarczenia: " + dateFormat.format(OrdersManage.completedOrders.get(i)
+                    .getDaty().get(Status.DELIVEREDDATE.toString()).getTime()));
+            System.out.println("----------------------------");
+
+        }
     }
     public void finanse() {
         _utarg();

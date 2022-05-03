@@ -4,6 +4,7 @@ import Enums.Categories;
 import Enums.Meals;
 
 import javax.naming.spi.DirObjectFactory;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -188,11 +189,49 @@ public class MenuManage {
                 "'----------------------------------'");
 
         for (int i = 0; i < itemList.size(); i++) {
-            System.out.println("#" + itemList.get(i).getMenuItemID() + " | " + itemList.get(i).getName() +
-                    " | $" + itemList.get(i).getPrice());
+            System.out.print("#" + itemList.get(i).getMenuItemID() + " | " + itemList.get(i).getName() +
+                    " | $" + itemList.get(i).getPrice() + " | ");
+            System.out.println(itemList.get(i).isAvalible() ? "Dostepny" : "Niedostepny");
         }
 
     }
+    public boolean changeStatus(int id) {
+
+        String itemName = "";
+        int index = 0;
+
+        for (int i = 0; i < itemList.size(); i++) {
+            if (itemList.get(i).getMenuItemID() == id) {
+                itemName = itemList.get(i).getName();
+                index = i;
+            }
+        }
+
+        if (itemList.stream().anyMatch(MenuItem -> MenuItem.getMenuItemID() == id)) {
+            System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+            System.out.println("\n" +
+                    "███████╗███╗░░░███╗██╗███████╗███╗░░██╗  ░██████╗████████╗░█████╗░████████╗██╗░░░██╗░██████╗\n" +
+                    "╚════██║████╗░████║██║██╔════╝████╗░██║  ██╔════╝╚══██╔══╝██╔══██╗╚══██╔══╝██║░░░██║██╔════╝\n" +
+                    "░░███╔═╝██╔████╔██║██║█████╗░░██╔██╗██║  ╚█████╗░░░░██║░░░███████║░░░██║░░░██║░░░██║╚█████╗░\n" +
+                    "██╔══╝░░██║╚██╔╝██║██║██╔══╝░░██║╚████║  ░╚═══██╗░░░██║░░░██╔══██║░░░██║░░░██║░░░██║░╚═══██╗\n" +
+                    "███████╗██║░╚═╝░██║██║███████╗██║░╚███║  ██████╔╝░░░██║░░░██║░░██║░░░██║░░░╚██████╔╝██████╔╝\n" +
+                    "╚══════╝╚═╝░░░░░╚═╝╚═╝╚══════╝╚═╝░░╚══╝  ╚═════╝░░░░╚═╝░░░╚═╝░░╚═╝░░░╚═╝░░░░╚═════╝░╚═════╝░");
+
+            boolean jakiejest = itemList.get(index).isAvalible();
+            itemList.get(index).setAvalible(!jakiejest);
+            System.out.println();
+            System.out.println("Zmieniles status:");
+            System.out.println("#" + itemList.get(index).getMenuItemID() + " | " + itemList.get(index).getName());
+            System.out.print(jakiejest ? "z dostepnego na -> " : "z niedostepnego na -> ");
+            System.out.println(jakiejest ? "niedostepny." : "dostepny.");
+            System.out.println();
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     /*Dodaje domyślne danie do listy*/
     public void addDefaultItems() {
@@ -224,9 +263,11 @@ public class MenuManage {
             for (int j = 0; j < itemList.size(); j++) {
                 if (itemList.get(j).getCategory().equalsIgnoreCase(categoryList.get(i))) {
                     System.out.print(
-                            "#"+ itemList.get(j).getMenuItemID()+" --> |" +itemList.get(j).getName() + "| --> |$" +
-                            itemList.get(j).getPrice() + "|\n(" +
-                            itemList.get(j).getDescription() + ")");
+                            "|#"+ itemList.get(j).getMenuItemID()+"| |" +itemList.get(j).getName() + "| |$" +
+                                    itemList.get(j).getPrice() + "| ");
+                    System.out.print(itemList.get(j).isAvalible ? "\n" : "|Niedostepne!|\n(");
+
+                    System.out.print("(" + itemList.get(j).getDescription() + ")");
                     if (j+1 == itemList.size()) {
 
                     } else {
@@ -248,6 +289,7 @@ public class MenuManage {
         private String name;
         private String description;
         private String category;
+        private boolean isAvalible;
         private double price;
 
         public MenuItem(String name, String description, String category, double price) {
@@ -256,6 +298,7 @@ public class MenuManage {
             this.description = description;
             this.category = category;
             this.price = price;
+            this.isAvalible = true;
             id = menuItemID.incrementAndGet();
         }
 
@@ -274,6 +317,13 @@ public class MenuManage {
         }
         public double getPrice() {
             return price;
+        }
+
+        public void setAvalible(boolean avalible) {
+            isAvalible = avalible;
+        }
+        public boolean isAvalible() {
+            return isAvalible;
         }
 
         public void setId() {

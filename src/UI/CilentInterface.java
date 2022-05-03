@@ -2,8 +2,6 @@ package UI;
 
 import Units.OrdersManage;
 
-import static Units.OrdersManage.sort;
-
 public class CilentInterface extends UserInterface{
 
     private final OrdersManage ordersManage;
@@ -12,8 +10,7 @@ public class CilentInterface extends UserInterface{
         this.ordersManage = new OrdersManage();
     }
 
-    public void jestemKlientem() throws InterruptedException {
-        ordersManage.addDefultOrders();
+    public void jestemKlientem() {
         _logo();
         System.out.println(
                 ".----------------------------.\n" +
@@ -39,7 +36,7 @@ public class CilentInterface extends UserInterface{
                 case 2:
                     OrdersManage.startProcess();
                     ordersManage.clearKoszyk();
-                    ordersManage.deliveryMenu();
+                    ordersManage.noweZamowienieDostawa();
                     jestemKlientem();
                     break;
 
