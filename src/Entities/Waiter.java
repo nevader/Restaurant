@@ -19,6 +19,18 @@ public class Waiter extends Person.Employee {
     }
 
 
+    public ArrayList<OrdersManage.Order> getOrdersToPlace() {
+        return ordersToPlace;
+    }
+
+    public double getTips() {
+        return tips;
+    }
+
+    public int getDeliveredCount() {
+        return deliveredCount;
+    }
+
     public int getOrdersToPlaceSize() {
         return ordersToPlace.size();
     }

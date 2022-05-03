@@ -1,12 +1,15 @@
 package Units;
 
+import Entities.Waiter;
 import Enums.Status;
 import UI.UserInterface;
 
+import java.awt.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.InputMismatchException;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class RestaurantManage extends UserInterface {
@@ -57,6 +60,7 @@ public class RestaurantManage extends UserInterface {
         } while (!isValidOption);
 
 
+
         _noweDanie();
         System.out.print("\nNazwa dania: " + name + "\n" +
                 "Opis dania: " + desc + "\n" + "Cena dania: $" + cena + "\n\n" +
@@ -66,51 +70,30 @@ public class RestaurantManage extends UserInterface {
                 "'------------------------------------------------'\n");
         menuManage.printCategories();
         System.out.println("\n#0. DODAJ NOWĄ\n");
-        System.out.print("#");
-
-        isValidOption = false;
-        int kategoriaInt = 0;
-
-        do {
-            try {
-                kategoriaInt = in.nextInt();
-                isValidOption = true;
-            } catch (InputMismatchException e) {
-                in.next(); //need to consume the invalid token to avoid an infinite loop
-            }
-        } while (!isValidOption);
 
         String newKategory = "";
-
-        if (kategoriaInt == 0) {
-
-            _nowakategoria();
-
-            System.out.println("\n" +
-                    ".------------------------------.\n" +
-                    "| Wpisz nazwe nowej kategorii: |\n" +
-                    "'------------------------------'\n");
-            System.out.print("#");
-            in.nextLine();
-
-            newKategory = in.nextLine();
-
-            menuManage.addCategory(newKategory);
-
-
-        } else {
+        do {
             flag = false;
+            userChoice = userInputNextInt("Podaj:");
+            if (userChoice == 0) {
+                _nowakategoria();
+                System.out.println("\n" +
+                        ".------------------------------.\n" +
+                        "| Wpisz nazwe nowej kategorii: |\n" +
+                        "'------------------------------'\n");
+                System.out.print("#");
+                in.nextLine();
+                newKategory = in.nextLine();
+                menuManage.addCategory(newKategory);
+                flag = true;
+            } else if (userChoice > 0 && userChoice < menuManage.getCategoryList().size()+1) {
+                newKategory = menuManage.getCategoryList().get(userChoice-1);
+                flag = true;
+            } else {
+                System.out.println("Wybierz poprawna!");
+            }
+        } while (!flag);
 
-            do {
-                if (kategoriaInt > menuManage.getCategoryList().size() + 1 ||
-                        kategoriaInt < 1) {
-                    System.out.println("Wybierz poprawna kategorie");
-                } else {
-                    newKategory = menuManage.getCategoryIndex(kategoriaInt);
-                    flag = true;
-                }
-            } while (!flag);
-        }
 
         menuManage.addItem(name, desc, newKategory, cena);
         _noweDanie();
@@ -240,6 +223,19 @@ public class RestaurantManage extends UserInterface {
         System.out.println("delivery cook" + OrdersManage.deliveryOrderstoCook);
         System.out.println("table place" + OrdersManage.tableOrderstoPlace);
         System.out.println("delivery place" + OrdersManage.deliveryOrderstoPlace);
+
+        System.out.println();
+        for (int i = 0; i < PersonelManage.listaKelnerow.size(); i++) {
+            System.out.println("Kelner: " + PersonelManage.listaKelnerow.get(i).getName() + "\n"
+                    + PersonelManage.listaKelnerow.get(i).getOrdersToPlace());
+        }
+
+        System.out.println();
+        for (int i = 0; i < PersonelManage.listaDostawcow.size(); i++) {
+            System.out.println("Dostawca: " + PersonelManage.listaDostawcow.get(i).getName() + "\n"
+                    + PersonelManage.listaDostawcow.get(i).getOrdersToDelivery());
+        }
+
     }
 
 
@@ -270,6 +266,7 @@ public class RestaurantManage extends UserInterface {
                 ".-------------.\n" +
                 "| #1 Kucharz  |\n" +
                 "| #2 Dostawca |\n" +
+                "| #3 Kelner   |\n" +
                 "'-------------'\n");
         do {
             flag = false;
@@ -289,12 +286,21 @@ public class RestaurantManage extends UserInterface {
                     pressAnyKeyToContinue();
                     flag = true;
                     return;
+                case 3:
+                    personelManage.addWaiter(imie, telefon);
+                    _nowyPracownik();
+                    System.out.println("\nWitaj na pokładzie " + imie + "!");
+                    pressAnyKeyToContinue();
+                    flag = true;
+                    return;
+
                 default:
                     _nowyPracownik();
                     System.out.println("\nRola nowego pracownika:\n" +
                             ".-------------.\n" +
                             "| #1 Kucharz  |\n" +
                             "| #2 Dostawca |\n" +
+                            "| #3 Kelner   |\n" +
                             "'-------------'");
                     System.out.println("\nWYBIERZ POPRAWNĄ OPCJĘ!");
                     break;
@@ -323,6 +329,14 @@ public class RestaurantManage extends UserInterface {
                     "Imię: " + PersonelManage.listaDostawcow.get(i).getName());
             System.out.println("########################\n");
         }
+
+        for (int i = 0; i < PersonelManage.listaKelnerow.size(); i++) {
+            System.out.println("#######| KELNER |#######");
+            System.out.println("ID #" + PersonelManage.listaKelnerow.get(i).getId() + ", " +
+                    "Imię: " + PersonelManage.listaKelnerow.get(i).getName());
+            System.out.println("########################\n");
+        }
+
 
         System.out.print(
                 ".--------------------------------------------.\n" +
@@ -381,6 +395,12 @@ public class RestaurantManage extends UserInterface {
             }
         }
 
+        for (int i = 0; i < PersonelManage.listaKelnerow.size(); i++) {
+            if (PersonelManage.listaKelnerow.get(i).getId() == id) {
+                eployeName = PersonelManage.listaKelnerow.get(i).getName();
+            }
+        }
+
 
         if (PersonelManage.listaKucharzy.stream().anyMatch(employee -> employee.getId() == id)) {
             if (PersonelManage.listaKucharzy.size() == 1) {
@@ -413,6 +433,24 @@ public class RestaurantManage extends UserInterface {
                 System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
                 _zwolnijPracownika();
                 System.out.println("\nZwolniles:\n" + "#" + id + " | " + eployeName + "| Dostawca");
+
+                return true;
+            }
+        }
+
+        if (PersonelManage.listaKelnerow.stream().anyMatch(employee -> employee.getId() == id)) {
+            if (PersonelManage.listaKelnerow.size() == 1) {
+                _zwolnijPracownika();
+                System.out.print("\n" +
+                        ".-----------------------------------------.\n" +
+                        "| Nie mozesz zwolnic ostatniego kelnera! |\n" +
+                        "'-----------------------------------------'\n");
+                pressAnyKeyToContinue();
+                return false;
+            } else if (PersonelManage.listaKelnerow.removeIf(employee -> employee.getId() == id)) {
+                System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+                _zwolnijPracownika();
+                System.out.println("\nZwolniles:\n" + "#" + id + " | " + eployeName + "| Kelner");
 
                 return true;
             }

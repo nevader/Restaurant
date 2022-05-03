@@ -2,7 +2,6 @@ package Entities;
 
 import DataTypes.Address;
 import DataTypes.Person;
-import Restauracja.Tables;
 
 public class Customer extends Person {
 

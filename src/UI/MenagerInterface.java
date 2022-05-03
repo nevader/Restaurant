@@ -166,6 +166,9 @@ public class MenagerInterface extends UserInterface{
                     zarzadzajPersonelem();
                     break;
                 case 3:
+                    OrdersManage.startProcess();
+                    _personel();
+                    System.out.println();
                     personelManage.printListaPracownikow();
                     pressAnyKeyToContinue();
                     zarzadzajPersonelem();

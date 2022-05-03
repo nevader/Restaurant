@@ -18,6 +18,9 @@ public class DeliveryMan extends Person.Employee {
 
     }
 
+    public ArrayList<OrdersManage.Order> getOrdersToDelivery() {
+        return ordersToDelivery;
+    }
 
     public int getOrdersToDeliverySize() {
       return ordersToDelivery.size();

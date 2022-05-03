@@ -3,6 +3,7 @@ package Units;
 import Enums.Categories;
 import Enums.Meals;
 
+import javax.naming.spi.DirObjectFactory;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -215,19 +216,26 @@ public class MenuManage {
 
         for (int i = 0; i < categoryList.size(); i++) {
 
-                System.out.print("#########|" + categoryList.get(i)+ "|#########");
+            int finalI = i;
+            if (itemList.stream().anyMatch(itemList -> itemList.getCategory().equalsIgnoreCase(categoryList.get(finalI))))
+                System.out.print("#########|" + categoryList.get(i)+ "|#########\n");
 
 
             for (int j = 0; j < itemList.size(); j++) {
-                if (itemList.get(j).getCategory().equals(categoryList.get(i))) {
-                    System.out.print("\n" +
+                if (itemList.get(j).getCategory().equalsIgnoreCase(categoryList.get(i))) {
+                    System.out.print(
                             "#"+ itemList.get(j).getMenuItemID()+" --> |" +itemList.get(j).getName() + "| --> |$" +
                             itemList.get(j).getPrice() + "|\n(" +
                             itemList.get(j).getDescription() + ")");
+                    if (j+1 == itemList.size()) {
+
+                    } else {
+                        System.out.println("\n");
+                    }
                 }
-                System.out.println();
             }
         }
+        System.out.println();
 
         }
 

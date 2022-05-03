@@ -18,7 +18,7 @@ public class StartInterface extends UserInterface{
         this.menagerInterface = new MenagerInterface();
     }
 
-    public void ekranPowitalny() {
+    public void ekranPowitalny() throws InterruptedException {
 
         _logo();
         System.out.println("\nWitamy w Cluckin' Bell!\n" +

@@ -3,6 +3,8 @@ package Units;
 import Entities.DeliveryMan;
 import Entities.Waiter;
 import Enums.Status;
+import Restauracja.Tables;
+import UI.StartInterface;
 import UI.UserInterface;
 import DataTypes.Address;
 import Entities.Customer;
@@ -27,9 +29,10 @@ public class OrdersManage extends UserInterface {
     public static ArrayList <Order> completedOrders;
     private final ArrayList <MenuManage.MenuItem> koszyk = new ArrayList<>();
 
-    private static final long deliverytime = 5_000;
-    private static final long prepareTime = 2_000;
-    public static final long expiredOrder = 10_000;
+    private static final long deliverytime = 30000;
+    private static final long prepareTime = 1_000;
+    public static final long expiredOrder = 11111111;
+    public static final long tableReservationTime = 10_000;
 
     public OrdersManage() {
         currentOrders = new ArrayList<>();
@@ -40,7 +43,6 @@ public class OrdersManage extends UserInterface {
         tableOrderstoPlace = new ArrayList<>();
     }
 
-
     /*Delivery*/
     public void deliveryMenu() {
 
@@ -50,8 +52,9 @@ public class OrdersManage extends UserInterface {
             System.out.println("\n" +
                     ".------------------------.\n" +
                     "| #1 Dodaj do koszyka    |\n" +
-                    "| #2 Pokaz koszyk        |\n" +
-                    "| #3 Realizuj zamowienie |\n" +
+                    "| #2 Usun z koszyka      |\n" +
+                    "| #3 Pokaz koszyk        |\n" +
+                    "| #4 Realizuj zamowienie |\n" +
                     "| #0 Wyjdz               |\n" +
                     "'------------------------'\n");
             userChoice = userInputNextInt("Wybierz:\n#");
@@ -62,12 +65,16 @@ public class OrdersManage extends UserInterface {
                     deliveryMenu();
                     break;
                 case 2:
+                    koszykRemove();
+                    deliveryMenu();
+                    break;
+                case 3:
                     _koszyk();
                     showKoszyk(koszyk);
                     pressAnyKeyToContinue();
                     deliveryMenu();
                     break;
-                case 3:
+                case 4:
                     deliveryFinish();
                     flag = true;
                     break;
@@ -153,18 +160,14 @@ public class OrdersManage extends UserInterface {
         Customer customer = deliveryInfo();
 
         _podsumowanie();
-
-        System.out.print("\n" +
-                ".-------------------.\n" +
-                "| Twoje zamowienie: |\n" +
-                "'-------------------'");
+        System.out.println();
         showKoszyk(koszyk);
 
 
         System.out.println("\n" +
-                ".-------------.\n" +
-                "| Twoje dane: |\n" +
-                "'-------------'");
+                ".------------------------.\n" +
+                "| Twoje dane do dostawy: |\n" +
+                "'------------------------'");
 
         System.out.println("Imie: " + customer.getName());
         System.out.println("Telefon: " + customer.getPhone());
@@ -209,15 +212,19 @@ public class OrdersManage extends UserInterface {
 
         do {
             flag = false;
-            userChoice = userInputNextInt("Podaj ID");
+            System.out.print("\n" +
+                    ".-----------------------------------------------------------.\n" +
+                    "| Wybierz danie które chcesz zamowic wypisujac jego #numer. |\n" +
+                    "'-----------------------------------------------------------'\n");
+            userChoice = userInputNextInt("\nWpisz #numer dania: \n#");
 
             if (userChoice < 1 || userChoice > listaDan.size()) {
-                System.out.println("Podaj poprawny ID");
+                System.out.println("Wpisz poprawny numer!");
 
             } else {
                 for (int i = 0; i < listaDan.size() || !flag; i++) {
                     if (listaDan.get(i).getMenuItemID() == userChoice) {
-                        int ilosc = userInputNextInt("Podaj ilosc: ");
+                        int ilosc = userInputNextInt("\nPodaj ilość porcji: \n#");
                         for (int j = 0; j < ilosc; j++) {
                             koszyk.add(listaDan.get(i));
                             flag = true;
@@ -234,20 +241,100 @@ public class OrdersManage extends UserInterface {
     public void showKoszyk (ArrayList <MenuManage.MenuItem> koszyk) {
 
         double totalprice = 0;
-
-        System.out.println("");
+        System.out.println(
+                ".----------------------------.\n" +
+                "| Twoje aktualne zamówienie: |\n" +
+                "'----------------------------'");
         for (int i = 0; i < koszyk.size(); i++) {
-            System.out.print("#" + (i+1) + " " + koszyk.get(i).getName() +
-                    " |" + koszyk.get(i).getPrice() + "|\n");
+            System.out.print("#" + (i+1) + " - " + koszyk.get(i).getName() +
+                    " - $" + koszyk.get(i).getPrice() + "\n");
 
             totalprice += koszyk.get(i).getPrice();
         }
-        System.out.println("Total price: $" + totalprice);
+        System.out.printf("Całkowita cena: $%,.2f\n", totalprice);
 
 
     }
     public void clearKoszyk() {
         koszyk.clear();
+    }
+    public boolean removeItemKoszyk (int id) {
+
+        String itemName = "";
+
+        if (id > 0 && id < koszyk.size()+1) {
+            itemName = koszyk.get(id-1).getName();
+
+            System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+            System.out.println("\n" +
+                    "██╗░░░██╗░██████╗██╗░░░██╗███╗░░██╗  ██████╗░░█████╗░███╗░░██╗██╗███████╗\n" +
+                    "██║░░░██║██╔════╝██║░░░██║████╗░██║  ██╔══██╗██╔══██╗████╗░██║██║██╔════╝\n" +
+                    "██║░░░██║╚█████╗░██║░░░██║██╔██╗██║  ██║░░██║███████║██╔██╗██║██║█████╗░░\n" +
+                    "██║░░░██║░╚═══██╗██║░░░██║██║╚████║  ██║░░██║██╔══██║██║╚████║██║██╔══╝░░\n" +
+                    "╚██████╔╝██████╔╝╚██████╔╝██║░╚███║  ██████╔╝██║░░██║██║░╚███║██║███████╗\n" +
+                    "░╚═════╝░╚═════╝░░╚═════╝░╚═╝░░╚══╝  ╚═════╝░╚═╝░░╚═╝╚═╝░░╚══╝╚═╝╚══════╝");
+            System.out.println("\nUsunałes:\n" + "#" + id + " | " + itemName + "\n");
+
+            koszyk.remove(id-1);
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public void koszykRemove() {
+
+        _usunDanie();
+
+        if (koszyk.isEmpty()) {
+            System.out.print("\n" +
+                    ".-------------------------.\n" +
+                    "| Twój koszyk jest pusty! |\n" +
+                    "'-------------------------'\n");
+
+            pressAnyKeyToContinue();
+            return;
+        }
+
+        System.out.println("\n" +
+                ".---------------------------------------------------------.\n" +
+                "| Wybierz danie które chcesz usunąć wpisując jego #numer. |\n" +
+                "'---------------------------------------------------------'");
+        showKoszyk(koszyk);
+        System.out.println();
+        System.out.println("#0 Cofnij");
+
+        userChoice = userInputNextInt("Wpisz #numer dania: \n#");
+
+        if (userChoice == 0) {
+            return;
+        }
+
+        boolean removed = removeItemKoszyk(userChoice);
+
+        if (removed) {
+            System.out.println(
+                    ".-----------------------.\n" +
+                            "| #1 Usun kolejne danie |\n" +
+                            "| #0 Wróc               |\n" +
+                            "'-----------------------'\n");
+
+            do {
+                userChoice = userInputNextInt("Wybierz opcje: \n#");
+                switch (userChoice) {
+                    case 1:
+                        flag = true;
+                        koszykRemove();
+                        break;
+                    case 0:
+                        flag = true;
+                        return;
+                    default:
+                        wybierzPoprawna();
+                        break;
+                }
+            } while (!flag);
+        }
+
     }
 
     /*Stacjonarne*/
@@ -291,20 +378,6 @@ public class OrdersManage extends UserInterface {
         startProcess();
         pressAnyKeyToContinue();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
     public void koszykstacjonar() {
 
@@ -314,8 +387,9 @@ public class OrdersManage extends UserInterface {
             System.out.println("\n" +
                     ".---------------------------------------.\n" +
                     "| #1 Dodaj nastepne danie do zamowienia |\n" +
-                    "| #2 Pokaz aktualnie zamowione dania    |\n" +
-                    "| #3 Złóz zamowienie                    |\n" +
+                    "| #2 Usuń pozycje z zamowienia          |\n" +
+                    "| #3 Pokaz aktualnie zamowione dania    |\n" +
+                    "| #4 Złóz zamowienie                    |\n" +
                     "'---------------------------------------'\n");
             userChoice = userInputNextInt("Wybierz:\n#");
 
@@ -325,11 +399,15 @@ public class OrdersManage extends UserInterface {
                     koszykstacjonar();
                     break;
                 case 2:
+                    koszykRemove();
+                    koszykstacjonar();
+                    break;
+                case 3:
                     _koszyk();
                     showKoszyk(koszyk);
                     pressAnyKeyToContinue();
                     koszykstacjonar();
-                case 3:
+                case 4:
                     flag = true;
                     break;
                 default:
@@ -413,6 +491,56 @@ public class OrdersManage extends UserInterface {
         return userChoice;
     }
 
+    public void addDefultOrders() throws InterruptedException {
+
+        /*DEFAULT ADDRESS*/
+        Address address = new Address("Default", "Default", "Default");
+
+        /*DELIVERY CUSTOMERS*/
+        Customer custDeliv1 = new Customer("Maciek", "123-123", true, address, 0);
+        Customer custDeliv2 = new Customer("Wacek", "123-123", true, address, 0);
+        Customer custDeliv3 = new Customer("Maniek", "123-123", true, address, 0);
+        Customer custDeliv4 = new Customer("Celina", "123-123", true, address, 0);
+        Customer custDeliv5 = new Customer("Zbyszek", "123-123", true, address, 0);
+
+        /*RESTAURANT CUSTOMERS*/
+        Customer custRest1 = new Customer("Zofia", "123-123", false, address, 1);
+        Customer custRest2 = new Customer("Dagmara", "123-123", false, address, 2);
+
+        newOrderDelivery(custDeliv1, randomOrder());
+        startProcess();
+        Thread.sleep(1000);
+        newOrderDelivery(custDeliv2, randomOrder());
+        startProcess();
+        Thread.sleep(1000);
+        newOrderDelivery(custDeliv3, randomOrder());
+        startProcess();
+        Thread.sleep(1000);
+        newOrderDelivery(custDeliv4, randomOrder());
+        startProcess();
+        Thread.sleep(1000);
+        newOrderDelivery(custDeliv5, randomOrder());
+        startProcess();
+        Thread.sleep(1000);
+/*        newOrderRestaurant(custRest1, randomOrder());
+        newOrderRestaurant(custRest2, randomOrder());*/
+
+
+
+    }
+    public ArrayList<MenuManage.MenuItem> randomOrder() {
+
+        ArrayList <MenuManage.MenuItem> orders = new ArrayList<>();
+        int order;
+        for (int i = 0; i < (int)((Math.random() * (20 - 1)) + 1); i++) {
+            order = (int)((Math.random() * menuManage.getItemList().size()));
+            orders.add(menuManage.getItemList().get(order));
+        }
+
+        return orders;
+
+    }
+
 
     public static void startProcess() {
         sort();
@@ -424,7 +552,7 @@ public class OrdersManage extends UserInterface {
         sort();
     }
     public static void sort() {
-
+        
 
         tableOrderstoCook = (ArrayList<Order>) currentOrders.stream()
                 .filter(order -> order.getStatus().equals(Status.REALIZACJA.toString()) &&
@@ -465,7 +593,7 @@ public class OrdersManage extends UserInterface {
             sort();
         }
 
-        if (!deliveryOrderstoCook.isEmpty()) {
+    /*    if (!deliveryOrderstoCook.isEmpty()) {
 
             for (int i = 0; i < deliveryOrderstoCook.size(); i++) {
 
@@ -499,7 +627,7 @@ public class OrdersManage extends UserInterface {
             }
 
 
-        }
+        }*/
 
 
 

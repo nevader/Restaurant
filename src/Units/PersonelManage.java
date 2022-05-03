@@ -34,20 +34,32 @@ public class PersonelManage {
     }
     public void printListaPracownikow() {
 
-        System.out.println("Kucharze: ");
-        for (Chef chef : listaKucharzy) {
-            System.out.println(chef.getName());
+        System.out.println("######| KUCHARZE |######");
+        for (int i = 0; i < listaKucharzy.size(); i++) {
+            System.out.println("ID #" + listaKucharzy.get(i).getId() + "\n"+
+                    "Imię: " + listaKucharzy.get(i).getName() + "\n" +
+                    "Telefon: " + listaKucharzy.get(i).getPhone() + "\n" +
+                    "------------------------");
+        }
+        System.out.println("\n######| DOSTAWCY |######");
+        for (int i = 0; i < listaDostawcow.size(); i++) {
+            System.out.println("ID #" + listaDostawcow.get(i).getId() + "\n" +
+                    "Imię: " + listaDostawcow.get(i).getName() + "\n" +
+                    "Telefon: " + listaDostawcow.get(i).getPhone() + "\n" +
+                    "Liczba dostarczonych zamowien: " + listaDostawcow.get(i).getDeliveredCount());
+            System.out.printf("Napiwki: %,.2f \n", listaDostawcow.get(i).getTips());
+            System.out.println("------------------------");
         }
 
-        System.out.println("Dostawcy: ");
-        for (DeliveryMan deliveryMan : listaDostawcow) {
-            System.out.println("imie:" + deliveryMan.getName());
-            System.out.println("ilosc dostarcznonych zamowien: #" + deliveryMan.getDeliveredCount());
-            System.out.println("łączne napiwki: " + deliveryMan.getTips());
+        System.out.println("\n######| KELNERZY |######");
+        for (int i = 0; i < listaKelnerow.size(); i++) {
+            System.out.println("ID #" + listaKelnerow.get(i).getId() + "\n"+
+                    "Imię: " + listaKelnerow.get(i).getName() + "\n"+
+                    "Telefon: " + listaKelnerow.get(i).getPhone() + "\n"+
+                    "Liczba dostarczonych zamowien: " + listaKelnerow.get(i).getDeliveredCount());
+            System.out.printf("Napiwki: %,.2f \n", listaKelnerow.get(i).getTips());
+            System.out.println("------------------------");
         }
     }
 
-
-
-    // generic type? lista wszystkich pracownikow
 }
