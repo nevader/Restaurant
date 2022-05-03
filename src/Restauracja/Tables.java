@@ -10,7 +10,7 @@ public class Tables {
     private final Table table3;
     private final Table table4;
 
-    private final String[][] tables = {
+    private final String[][] tablesArray = {
             {"╔══════════════", "═══|▓▓▓▓|═══", "══════════════╗"},
             {"║              ", "   |▓▓▓▓|   ", "              ║"},
             {"║    --■■--■■--", "   |▓▓▓▓|   ", "--■■--■■--    ║   .----------------------------------."},
@@ -47,6 +47,7 @@ public class Tables {
         return table1;
     }
 
+
     public Table getTable2() {
         return table2;
     }
@@ -60,10 +61,10 @@ public class Tables {
     }
 
     public void printTables() {
-        for (int i = 0; i < tables.length; i++) {
+        for (int i = 0; i < tablesArray.length; i++) {
 
-            for (int j = 0; j < tables[i].length; j++) {
-                System.out.print(tables[i][j]);
+            for (int j = 0; j < tablesArray[i].length; j++) {
+                System.out.print(tablesArray[i][j]);
             }
             System.out.println();
         }
@@ -74,19 +75,19 @@ public class Tables {
         switch (tableNOt) {
             case 1:
                 table1.setAvalible(false);
-                tables[1][0] = "║      Zajęty  ";
+                tablesArray[1][0] = "║      Zajęty  ";
                 break;
             case 2:
                 table2.setAvalible(false);
-                tables[1][2] = "  Zajęty      ║";
+                tablesArray[1][2] = "  Zajęty      ║";
                 break;
             case 3:
                 table3.setAvalible(false);
-                tables[7][0] = "║      Zajęty  ";
+                tablesArray[7][0] = "║      Zajęty  ";
                 break;
             case 4:
                 table4.setAvalible(false);
-                tables[7][2] = "  Zajęty      ║";
+                tablesArray[7][2] = "  Zajęty      ║";
                 break;
             default:
                 System.out.println("Gowno");
@@ -97,29 +98,43 @@ public class Tables {
         switch (tableAvalible) {
             case 1:
                 table1.setAvalible(true);
-                tables[1][0] = "║     Dostępny ";
+                tablesArray[1][0] = "║     Dostępny ";
                 break;
             case 2:
                 table2.setAvalible(true);
-                tables[1][2] = " Dostępny     ║";
+                tablesArray[1][2] = " Dostępny     ║";
                 break;
             case 3:
                 table3.setAvalible(true);
-                tables[7][0] = "║     Dostępny ";
+                tablesArray[7][0] = "║     Dostępny ";
                 break;
             case 4:
                 table4.setAvalible(true);
-                tables[7][2] = " Dostępny     ║";
+                tablesArray[7][2] = " Dostępny     ║";
                 break;
             default:
                 System.out.println("Podaj lol");
         }
     }
 
+    public boolean isTableAvalible (int table) {
+        if (table == 1) {
+            return table1.isAvalible();
+        } else if (table == 2) {
+            return table2.isAvalible();
+        } else if (table == 3) {
+            return table3.isAvalible();
+        } else if (table == 4) {
+            return table4.isAvalible();
+        } else {
+            return false;
+        }
+        }
 
 
 
-    public static class Table {
+
+    public class Table {
 
 
         private boolean avalible;

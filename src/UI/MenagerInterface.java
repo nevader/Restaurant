@@ -45,6 +45,10 @@ public class MenagerInterface extends UserInterface{
                     manageRestaurant();
                     break;
                 case 4:
+                    OrdersManage.startProcess();
+                    restaurantManage.finanse();
+                    pressAnyKeyToContinue();
+                    manageRestaurant();
                     break;
                 case 0:
                     flag = true;

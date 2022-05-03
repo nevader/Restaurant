@@ -29,9 +29,9 @@ public class OrdersManage extends UserInterface {
     public static ArrayList <Order> completedOrders;
     private final ArrayList <MenuManage.MenuItem> koszyk = new ArrayList<>();
 
-    private static final long deliverytime = 30000;
+    private static final long deliverytime = 5_000;
     private static final long prepareTime = 1_000;
-    public static final long expiredOrder = 11111111;
+    public static final long expiredOrder = 1_000;
     public static final long tableReservationTime = 10_000;
 
     public OrdersManage() {
@@ -490,20 +490,28 @@ public class OrdersManage extends UserInterface {
 
         return userChoice;
     }
+    public void zwolnijStolik() {
+        for (int i = 0; i < completedOrders.size(); i++) {
+            if (!completedOrders.get(i).isDelivery()) {
+                int stolik = completedOrders.get(i).getCustomer().getTable();
+                if (completedOrders.get(i).getDaty().get(Status.DELIVEREDDATE.toString()).getTime() + tableReservationTime
+                > new Date().getTime() && !tables.isTableAvalible(stolik)) {
+                    tables.setTableAvalible(stolik);
+                }
+            }
+        }
+    }
 
     public void addDefultOrders() throws InterruptedException {
 
-        /*DEFAULT ADDRESS*/
         Address address = new Address("Default", "Default", "Default");
 
-        /*DELIVERY CUSTOMERS*/
         Customer custDeliv1 = new Customer("Maciek", "123-123", true, address, 0);
         Customer custDeliv2 = new Customer("Wacek", "123-123", true, address, 0);
         Customer custDeliv3 = new Customer("Maniek", "123-123", true, address, 0);
         Customer custDeliv4 = new Customer("Celina", "123-123", true, address, 0);
         Customer custDeliv5 = new Customer("Zbyszek", "123-123", true, address, 0);
 
-        /*RESTAURANT CUSTOMERS*/
         Customer custRest1 = new Customer("Zofia", "123-123", false, address, 1);
         Customer custRest2 = new Customer("Dagmara", "123-123", false, address, 2);
 
@@ -522,8 +530,8 @@ public class OrdersManage extends UserInterface {
         newOrderDelivery(custDeliv5, randomOrder());
         startProcess();
         Thread.sleep(1000);
-/*        newOrderRestaurant(custRest1, randomOrder());
-        newOrderRestaurant(custRest2, randomOrder());*/
+        newOrderRestaurant(custRest1, randomOrder());
+        newOrderRestaurant(custRest2, randomOrder());
 
 
 
@@ -593,7 +601,7 @@ public class OrdersManage extends UserInterface {
             sort();
         }
 
-    /*    if (!deliveryOrderstoCook.isEmpty()) {
+        if (!deliveryOrderstoCook.isEmpty()) {
 
             for (int i = 0; i < deliveryOrderstoCook.size(); i++) {
 
@@ -614,6 +622,7 @@ public class OrdersManage extends UserInterface {
 
                         deliveryOrderstoCook.get(i).setStatus(Status.ANULOWANE.toString());
                         deliveryOrderstoCook.remove(i);
+                        sort();
                     } else {
                         deliveryOrderstoCook.get(i).getDaty().put(Status.PRZEDAWNIONE.toString(),
                                 deliveryOrderstoCook.get(i).getDaty().get(Status.ORDERDATE.toString()));
@@ -622,12 +631,12 @@ public class OrdersManage extends UserInterface {
 
                         deliveryOrderstoCook.get(i).priceDiscount();
                         Collections.swap(deliveryOrderstoCook, 0, i);
+                        sort();
                     }
                 }
             }
 
-
-        }*/
+        }
 
 
 

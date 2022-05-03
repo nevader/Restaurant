@@ -237,6 +237,20 @@ public class RestaurantManage extends UserInterface {
         }
 
     }
+    public void finanse() {
+        _utarg();
+
+        System.out.println();
+        double utarg = 0;
+        for (int i = 0; i < OrdersManage.completedOrders.size(); i++) {
+            System.out.println("########################################");
+            System.out.print("ID #" + OrdersManage.completedOrders.get(i).getId());
+            System.out.printf(" | Należność: $%,.2f\n", OrdersManage.completedOrders.get(i).getTotalPrice());
+            utarg += OrdersManage.completedOrders.get(i).getTotalPrice();
+        }
+        System.out.printf("\nCałkowity utarg: $%,.2f\n", utarg);
+    }
+
 
 
     /*Personel*/
