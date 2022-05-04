@@ -40,17 +40,6 @@ public class MenuManage {
         return categoryList;
     }
 
-    /*Zwraca kategorie pod podanym indexem*/
-    public String getCategoryIndex (int index) {
-        String error = "Podaj poprawna liczbe!";
-
-        for (int i = 0; i < categoryList.size(); i++) {
-            if (i == index-1)
-                return categoryList.get(i);
-        }
-        return error;
-    }
-
     /*Dodaje nowa kategorie do listy*/
     public void addCategory(String name) {
         categoryList.add(name.toUpperCase());
@@ -75,12 +64,6 @@ public class MenuManage {
         return itemList;
     }
 
-    /*Przypisuje nowa liste dan*/
-    public void setItemList(ArrayList<MenuItem> itemList) {
-        this.itemList = itemList;
-    }
-
-
 
     /*Dodaje nowe danie do listy*/
     public void addItem(String name, String description, String category, double price) {
@@ -88,8 +71,6 @@ public class MenuManage {
         itemList.add(menuItem);
     }
 
-    /*Edytuje pola danego dania*/
-    public void editItem() {}
 
     /*Usuwa wybrane danie z listy po podaniu jego ID*/
     public boolean removeItem (int id) {
@@ -240,6 +221,9 @@ public class MenuManage {
         addItem(Meals.DUZY.name, Meals.DUZY.description, Categories.ZESTAW.toString(), Meals.DUZY.price);
         addItem(Meals.SREDNI.name, Meals.SREDNI.description, Categories.ZESTAW.toString(), Meals.SREDNI.price);
         addItem(Meals.MALY.name, Meals.MALY.description, Categories.ZESTAW.toString(), Meals.MALY.price);
+        addItem(Meals.SPRUNK.name, Meals.SPRUNK.description, Categories.NAPOJ.toString(), Meals.SPRUNK.price);
+        addItem(Meals.FRYTKI.name, Meals.FRYTKI.description, Categories.DODATKI.toString(), Meals.FRYTKI.price);
+
 
     }
 

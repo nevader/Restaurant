@@ -29,7 +29,8 @@ public class PersonelManage {
     }
     public void addDefaultPracownicy() {
         addChef("Maciek", "1234123-124124");
-        addDeliveryMan("Seba", "123312-123");
+        addChef("Michael", "666-879-413");
+        addDeliveryMan("Seba", "78978-41123");
         addWaiter("Krystyna", "123123-123123");
     }
     public void printListaPracownikow() {

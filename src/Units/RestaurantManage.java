@@ -223,28 +223,28 @@ public class RestaurantManage extends UserInterface {
         _zamowienia();
 
         System.out.println("Current time: " + dateFormat.format(new Date().getTime()));
-        for (int i = 0; i < OrdersManage.currentOrders.size(); i++) {
-            String status = OrdersManage.currentOrders.get(i).getStatus();
-            int id = OrdersManage.currentOrders.get(i).getId();
-            String isDelivery = OrdersManage.currentOrders.get(i).isDelivery() ? "przez portal" : "w restauracji";
-            long orderedtime = OrdersManage.currentOrders.get(i).getDaty().get(Status.ORDERED_DATE.toString()).getTime();
-            long startedCooking = OrdersManage.currentOrders.get(i).getDaty().get(Status.STARTED_COOKING_DATE.toString())
-                    == null ? 0 : OrdersManage.currentOrders.get(i).getDaty().get(Status.STARTED_COOKING_DATE.toString())
+        for (int i = 0; i < OrdersManage.allOrders.size(); i++) {
+            String status = OrdersManage.allOrders.get(i).getStatus();
+            int id = OrdersManage.allOrders.get(i).getId();
+            String isDelivery = OrdersManage.allOrders.get(i).isDelivery() ? "przez portal" : "w restauracji";
+            long orderedtime = OrdersManage.allOrders.get(i).getDaty().get(Status.ORDERED_DATE.toString()).getTime();
+            long startedCooking = OrdersManage.allOrders.get(i).getDaty().get(Status.STARTED_COOKING_DATE.toString())
+                    == null ? 0 : OrdersManage.allOrders.get(i).getDaty().get(Status.STARTED_COOKING_DATE.toString())
                     .getTime();
-            long finishedCooking = OrdersManage.currentOrders.get(i).getDaty().get(Status.FINISHED_COOKING_DATE.toString())
-                    == null ? 0 : OrdersManage.currentOrders.get(i).getDaty().get(Status.FINISHED_COOKING_DATE.toString())
+            long finishedCooking = OrdersManage.allOrders.get(i).getDaty().get(Status.FINISHED_COOKING_DATE.toString())
+                    == null ? 0 : OrdersManage.allOrders.get(i).getDaty().get(Status.FINISHED_COOKING_DATE.toString())
                     .getTime();
-            long startedDelivery = OrdersManage.currentOrders.get(i).getDaty().get(Status.STARTED_DELIVERY_DATE.toString())
-                    == null ? 0 : OrdersManage.currentOrders.get(i).getDaty().get(Status.STARTED_DELIVERY_DATE.toString())
+            long startedDelivery = OrdersManage.allOrders.get(i).getDaty().get(Status.STARTED_DELIVERY_DATE.toString())
+                    == null ? 0 : OrdersManage.allOrders.get(i).getDaty().get(Status.STARTED_DELIVERY_DATE.toString())
                     .getTime();
-            long finishedDelivery = OrdersManage.currentOrders.get(i).getDaty().get(Status.FINISHED_DELIVERY_DATE.toString())
-                    == null ? 0 : OrdersManage.currentOrders.get(i).getDaty().get(Status.FINISHED_DELIVERY_DATE.toString())
+            long finishedDelivery = OrdersManage.allOrders.get(i).getDaty().get(Status.FINISHED_DELIVERY_DATE.toString())
+                    == null ? 0 : OrdersManage.allOrders.get(i).getDaty().get(Status.FINISHED_DELIVERY_DATE.toString())
                     .getTime();
-            long canceledDate = OrdersManage.currentOrders.get(i).getDaty().get(Status.ANULOWANE.toString())
-                    == null ? 0 : OrdersManage.currentOrders.get(i).getDaty().get(Status.ANULOWANE.toString())
+            long canceledDate = OrdersManage.allOrders.get(i).getDaty().get(Status.ANULOWANE.toString())
+                    == null ? 0 : OrdersManage.allOrders.get(i).getDaty().get(Status.ANULOWANE.toString())
                     .getTime() + OrdersManage.expiredOrder;
-            long expiredOrder = OrdersManage.currentOrders.get(i).getDaty().get(Status.PRZEDAWNIONE.toString())
-                    == null ? 0 : OrdersManage.currentOrders.get(i).getDaty().get(Status.PRZEDAWNIONE.toString())
+            long expiredOrder = OrdersManage.allOrders.get(i).getDaty().get(Status.PRZEDAWNIONE.toString())
+                    == null ? 0 : OrdersManage.allOrders.get(i).getDaty().get(Status.PRZEDAWNIONE.toString())
                     .getTime() + OrdersManage.expiredOrder;
 
 
@@ -259,10 +259,10 @@ public class RestaurantManage extends UserInterface {
                     "Godzina przeterminowania zamowienia: " + dateFormat.format(expiredOrder));
         }
         System.out.println("#########################\n");
-        System.out.println("table cook" + OrdersManage.tableOrderstoCook);
-        System.out.println("delivery cook" + OrdersManage.deliveryOrderstoCook);
-        System.out.println("table place" + OrdersManage.tableOrderstoPlace);
-        System.out.println("delivery place" + OrdersManage.deliveryOrderstoPlace);
+        System.out.println("table cook" + OrdersManage.tableOrdersToCook);
+        System.out.println("delivery cook" + OrdersManage.deliveryOrdersToCook);
+        System.out.println("table place" + OrdersManage.tableOrdersForDelivery);
+        System.out.println("delivery place" + OrdersManage.deliveryOrdersForDelivery);
 
         System.out.println();
         for (int i = 0; i < PersonelManage.listaKelnerow.size(); i++) {

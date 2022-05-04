@@ -37,7 +37,7 @@ public class CilentInterface extends UserInterface{
                 case 2:
                     OrdersManage.startProcess();
                     ordersManage.clearKoszyk();
-                    ordersManage.noweZamowienieDostawa();
+                    ordersManage.newOrderDelivery();
                     jestemKlientem();
                     break;
 
