@@ -36,16 +36,16 @@ public class OrdersManage extends UserInterface {
     private static boolean diferentCooking;
 
     /*Czas dostawy zamowienia przed dostawce*/
-    private static final long deliverytime = 5000 ;
+    private static final long deliverytime = 10000 ;
 
     /*Czas przyzadzenia jednego dania przez jednego kucharza*/
-    private static final long prepareTime = 10000;
+    private static final long prepareTime = 5000;
 
     /*Czas przedawienia sie zamowienia*/
-    public static final long expiredOrder = 900;
+    public static final long expiredOrder = 30000;
 
     /*Czas rezerwacji stolika*/
-    public static final long tableReservationTime = 1000;
+    public static final long tableReservationTime = 10000;
 
     public OrdersManage() {
         currentOrders = new ArrayList<>();
