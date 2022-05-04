@@ -8,9 +8,8 @@ import java.util.ArrayList;
 public class Waiter extends Person.Employee {
 
     private double tips = 0;
-    private boolean isAvalible;
     private int deliveredCount = 0;
-    public ArrayList <OrdersManage.Order> ordersToPlace;
+    public ArrayList<OrdersManage.Order> ordersToPlace;
 
     public Waiter(String name, String phone) {
         super(name, phone);

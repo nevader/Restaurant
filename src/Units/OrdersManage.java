@@ -33,15 +33,16 @@ public class OrdersManage extends UserInterface {
     private static long lastOrderCooked;
     private static long lastOrderDelivered;
     private static long lastOrderPlaced;
+    private static boolean diferentCooking;
 
     /*Czas dostawy zamowienia przed dostawce*/
-    private static final long deliverytime = 12000 ;
+    private static final long deliverytime = 5000 ;
 
     /*Czas przyzadzenia jednego dania przez jednego kucharza*/
-    private static final long prepareTime = 3000;
+    private static final long prepareTime = 10000;
 
     /*Czas przedawienia sie zamowienia*/
-    public static final long expiredOrder = 90000000;
+    public static final long expiredOrder = 900;
 
     /*Czas rezerwacji stolika*/
     public static final long tableReservationTime = 1000;
@@ -55,6 +56,50 @@ public class OrdersManage extends UserInterface {
         tableOrderstoPlace = new ArrayList<>();
     }
 
+
+    public void randomOrder() {
+
+        clearKoszyk();
+        Address address = new Address("Random Street 12", "Random City", "000-000");
+
+        int temp = (Math.random() <= 0.5) ? 1 : 2;
+
+        boolean delivery = temp == 1;
+        int listadan = menuManage.getItemList().size();
+        int iloscpozycji = (int) Math.floor(Math.random()*(3-1+1)+1);
+
+
+        for (int i = 0; i < iloscpozycji; i++) {
+          int idpozycij = (int) Math.floor(Math.random()*(listadan-1+1)+1);
+          int iloscdan = (int) Math.floor(Math.random()*(2-1+1)+1);
+
+            for (int j = 0; j < menuManage.getItemList().size(); j++) {
+                if (menuManage.getItemList().get(j).getMenuItemID() == idpozycij) {
+                    for (int k = 0; k < iloscdan; k++) {
+                        koszyk.add(menuManage.getItemList().get(j));
+                    }
+                }
+            }
+        }
+
+        Customer customer = new Customer("Random", "666-666-666", address, 0);
+        if (delivery) {
+            newOrderDelivery(customer, koszyk);
+        } else {
+            newOrderRestaurant(customer, koszyk);
+        }
+
+        startProcess();
+        _koszyk();
+        showKoszyk(koszyk);
+        System.out.println(delivery ? "W dostawie" : "W restauracji");
+
+
+
+
+
+
+    }
 
     /*Sekcja skladania nowych zamowien w dostawie*/
     public void noweZamowienieDostawa() {
@@ -166,7 +211,7 @@ public class OrdersManage extends UserInterface {
 
         Address address = new Address(street, city, zipcode);
 
-        return new Customer(imie, telefon, true, address, 0);
+        return new Customer(imie, telefon, address, 0);
 
     }
     public void realizacjaZamowieniaDostawa() {
@@ -204,7 +249,6 @@ public class OrdersManage extends UserInterface {
 
 
     }
-
 
     /*Sekcja do zarzadzania koszykiem*/
     public ArrayList<MenuManage.MenuItem> addItemsDoKosztka () {
@@ -265,7 +309,9 @@ public class OrdersManage extends UserInterface {
 
             totalprice += koszyk.get(i).getPrice();
         }
-        System.out.printf("Całkowita cena: $%,.2f\n", totalprice);
+
+        System.out.printf("Całkowita cena: $%,.2f", totalprice);
+        System.out.println();
 
 
     }
@@ -387,7 +433,7 @@ public class OrdersManage extends UserInterface {
         showKoszyk(koszyk);
         System.out.println("Dziekujemy!");
         Address address = new Address("", "", "");
-        Customer customer = new Customer(imie, "", false, address, stolik);
+        Customer customer = new Customer(imie, "", address, stolik);
         newOrderRestaurant(customer, koszyk);
         startProcess();
         pressAnyKeyToContinue();
@@ -523,7 +569,7 @@ public class OrdersManage extends UserInterface {
                 System.out.println(new Date().getTime());
 
                 if (!tables.isTableAvalible(stolik)) {
-                    if ((completedOrders.get(i).getDaty().get(Status.DELIVEREDDATE.toString()).getTime() +
+                    if ((completedOrders.get(i).getDaty().get(Status.FINISHED_DELIVERY_DATE.toString()).getTime() +
                     tableReservationTime) < new Date().getTime()) {
                         tables.setTableAvalible(stolik);
                         completedOrders.get(i).setStatus(Status.WYJSCIE.toString());
@@ -546,6 +592,8 @@ public class OrdersManage extends UserInterface {
     }
     public static void sort() {
 
+
+
         if (tableOrderstoCook.isEmpty() && tableOrderstoPlace.isEmpty()) {
             lastOrderCooked = 0;
         }
@@ -561,7 +609,7 @@ public class OrdersManage extends UserInterface {
 
         /*sortuje ukonczone zamowienia pod wzgledem czasu ich wydania*/
         completedOrders = (ArrayList<Order>) completedOrders.stream().sorted(Comparator.comparing(order -> order.getDaty()
-                .get(Status.DELIVEREDDATE.toString()).getTime())).collect(Collectors.toList());
+                .get(Status.FINISHED_DELIVERY_DATE.toString()).getTime())).collect(Collectors.toList());
         
 
         /*przydziela kucharzom dania do przyzadzenia*/
@@ -620,19 +668,18 @@ public class OrdersManage extends UserInterface {
 
                 if (!deliveryOrderstoCook.get(i).getStatus().equals(Status.PRZEDAWNIONE.toString())) {
 
-                    long ordered = deliveryOrderstoCook.get(i).getDaty().get(Status.ORDERDATE.toString()).getTime();
+                    long ordered = deliveryOrderstoCook.get(i).getDaty().get(Status.ORDERED_DATE.toString()).getTime();
                     long expired = ordered + expiredOrder;
                     long currtime = new Date().getTime();
 
                     if (currtime > expired) {
-                        java.util.Random random = new java.util.Random();
-                        int temp = random.nextInt(2) + 1;
+                        int temp = (int) Math.floor(Math.random()*(2-1+1)+1);
 
 
                         /*rezygnacja*/
                         if (temp == 2) {
                             deliveryOrderstoCook.get(i).getDaty().put(Status.ANULOWANE.toString(),
-                                    deliveryOrderstoCook.get(i).getDaty().get(Status.ORDERDATE.toString()));
+                                    deliveryOrderstoCook.get(i).getDaty().get(Status.ORDERED_DATE.toString()));
 
                             deliveryOrderstoCook.get(i).setStatus(Status.ANULOWANE.toString());
                             deliveryOrderstoCook.remove(i);
@@ -642,12 +689,11 @@ public class OrdersManage extends UserInterface {
                         /*zrobic jako nastepne + znizka*/
                         else {
                             deliveryOrderstoCook.get(i).getDaty().put(Status.PRZEDAWNIONE.toString(),
-                                    deliveryOrderstoCook.get(i).getDaty().get(Status.ORDERDATE.toString()));
+                                    deliveryOrderstoCook.get(i).getDaty().get(Status.ORDERED_DATE.toString()));
 
                             deliveryOrderstoCook.get(i).setStatus(Status.PRZEDAWNIONE.toString());
 
                             deliveryOrderstoCook.get(i).priceDiscount();
-                            Collections.swap(deliveryOrderstoCook, 0, i);
                             sort();
                         }
                     }
@@ -660,19 +706,19 @@ public class OrdersManage extends UserInterface {
 
                 if (!tableOrderstoCook.get(i).getStatus().equals(Status.PRZEDAWNIONE.toString())) {
 
-                    long ordered = tableOrderstoCook.get(i).getDaty().get(Status.ORDERDATE.toString()).getTime();
+                    long ordered = tableOrderstoCook.get(i).getDaty().get(Status.ORDERED_DATE.toString()).getTime();
                     long expired = ordered + expiredOrder;
                     long currtime = new Date().getTime();
 
                     if (currtime > expired) {
                         java.util.Random random = new java.util.Random();
-                        int temp = random.nextInt(2) + 1;
+                        int temp = (int) Math.floor(Math.random()*(2-1+1)+1);
 
 
                         /*rezygnacja*/
                         if (temp == 2) {
                             tableOrderstoCook.get(i).getDaty().put(Status.ANULOWANE.toString(),
-                                    tableOrderstoCook.get(i).getDaty().get(Status.ORDERDATE.toString()));
+                                    tableOrderstoCook.get(i).getDaty().get(Status.ORDERED_DATE.toString()));
 
                             tableOrderstoCook.get(i).setStatus(Status.ANULOWANE.toString());
                             tableOrderstoCook.remove(i);
@@ -682,17 +728,41 @@ public class OrdersManage extends UserInterface {
                         /*zrobic jako nastepne + znizka*/
                         else {
                             tableOrderstoCook.get(i).getDaty().put(Status.PRZEDAWNIONE.toString(),
-                                    tableOrderstoCook.get(i).getDaty().get(Status.ORDERDATE.toString()));
+                                    tableOrderstoCook.get(i).getDaty().get(Status.ORDERED_DATE.toString()));
 
                             tableOrderstoCook.get(i).setStatus(Status.PRZEDAWNIONE.toString());
 
                             tableOrderstoCook.get(i).priceDiscount();
-                            Collections.swap(deliveryOrderstoCook, 0, i);
                             sort();
                         }
                     }
                 }
             }
+            for (int i = 0; i < tableOrderstoCook.size(); i++) {
+
+                if (tableOrderstoCook.get(i).getStatus().equals(Status.PRZEDAWNIONE.toString())) {
+
+                    Order temp = tableOrderstoCook.get(i);
+                    int index = tableOrderstoCook.indexOf(temp);
+                    tableOrderstoCook.remove(index);
+                    tableOrderstoCook.add(0, temp);
+
+
+                }
+            }
+
+            for (int i = 0; i < deliveryOrderstoCook.size(); i++) {
+
+                if (deliveryOrderstoCook.get(i).getStatus().equals(Status.PRZEDAWNIONE.toString())) {
+
+                    Order temp = deliveryOrderstoCook.get(i);
+                    int index = deliveryOrderstoCook.indexOf(temp);
+                    deliveryOrderstoCook.remove(index);
+                    deliveryOrderstoCook.add(0, temp);
+
+                }
+            }
+
         }
 
 
@@ -705,28 +775,33 @@ public class OrdersManage extends UserInterface {
 
     }
     public static void cook() {
+
         sort();
+
         long startedPraparing;
         long currentTime;
         long finisTime;
+        long cookedTime;
 
-        if (!OrdersManage.tableOrderstoCook.isEmpty()) {
+
+
+        if (!OrdersManage.tableOrderstoCook.isEmpty() && !diferentCooking) {
             if (OrdersManage.tableOrderstoCook.get(0)
-                    .getDaty().get(Status.STARTEDCOOKING.toString()) == null) {
+                    .getDaty().get(Status.STARTED_COOKING_DATE.toString()) == null) {
                 if (lastOrderCooked != 0) {
                     startedPraparing = lastOrderCooked;
                     OrdersManage.tableOrderstoCook.get(0)
-                            .getDaty().put(Status.STARTEDCOOKING.toString(),
+                            .getDaty().put(Status.STARTED_COOKING_DATE.toString(),
                                     new Date(startedPraparing));
                 } else {
                     startedPraparing = new Date().getTime();
                     OrdersManage.tableOrderstoCook.get(0)
-                            .getDaty().put(Status.STARTEDCOOKING.toString(),
+                            .getDaty().put(Status.STARTED_COOKING_DATE.toString(),
                                     new Date());
                 }
             } else {
                 startedPraparing = OrdersManage.tableOrderstoCook.get(0)
-                        .getDaty().get(Status.STARTEDCOOKING.toString()).getTime();
+                        .getDaty().get(Status.STARTED_COOKING_DATE.toString()).getTime();
             }
 
 
@@ -740,37 +815,41 @@ public class OrdersManage extends UserInterface {
                 OrdersManage.tableOrderstoCook.get(0).setStatus(Status.GOTOWE.toString());
                 OrdersManage.tableOrderstoCook.get(0).setCookedDate(new Date(finisTime));
                 OrdersManage.tableOrderstoPlace.add(OrdersManage.tableOrderstoCook.get(0));
+                cookedTime = finisTime - currentTime;
+                OrdersManage.tableOrderstoCook.get(0).setCookedtime(cookedTime);
                 OrdersManage.tableOrderstoCook.remove(0);
                 lastOrderCooked = finisTime;
-                sort();
+                startProcess();
 
                 if (!OrdersManage.tableOrderstoCook.isEmpty()) {
                     OrdersManage.tableOrderstoCook.get(0).setSTARTEDCOOKING(new Date(finisTime));
-                    sort();
+                    startProcess();
                 }
 
             }
         }
 
-        if (!OrdersManage.deliveryOrderstoCook.isEmpty() && OrdersManage.tableOrderstoCook.isEmpty()) {
+        if (!OrdersManage.deliveryOrderstoCook.isEmpty() && OrdersManage.tableOrderstoCook.isEmpty() ||
+                diferentCooking) {
             if (OrdersManage.deliveryOrderstoCook.get(0)
-                    .getDaty().get(Status.STARTEDCOOKING.toString()) == null) {
+                    .getDaty().get(Status.STARTED_COOKING_DATE.toString()) == null) {
                 if (lastOrderCooked != 0) {
                     startedPraparing = lastOrderCooked;
                     OrdersManage.deliveryOrderstoCook.get(0)
-                            .getDaty().put(Status.STARTEDCOOKING.toString(),
+                            .getDaty().put(Status.STARTED_COOKING_DATE.toString(),
                                     new Date(startedPraparing));
                 } else {
                     startedPraparing = new Date().getTime();
                     OrdersManage.deliveryOrderstoCook.get(0)
-                            .getDaty().put(Status.STARTEDCOOKING.toString(),
+                            .getDaty().put(Status.STARTED_COOKING_DATE.toString(),
                                     new Date());
                 }
             } else {
                 startedPraparing = OrdersManage.deliveryOrderstoCook.get(0)
-                        .getDaty().get(Status.STARTEDCOOKING.toString()).getTime();
+                        .getDaty().get(Status.STARTED_COOKING_DATE.toString()).getTime();
             }
 
+            diferentCooking = true;
 
             currentTime = new Date().getTime();
 
@@ -783,11 +862,12 @@ public class OrdersManage extends UserInterface {
                 OrdersManage.deliveryOrderstoPlace.add(OrdersManage.deliveryOrderstoCook.get(0));
                 OrdersManage.deliveryOrderstoCook.remove(0);
                 lastOrderCooked = finisTime;
-                sort();
+                diferentCooking = false;
+                startProcess();
 
                 if (!OrdersManage.deliveryOrderstoCook.isEmpty()) {
                     OrdersManage.deliveryOrderstoCook.get(0).setSTARTEDCOOKING(new Date(finisTime));
-                    sort();
+                    startProcess();
                 }
 
             }
@@ -797,7 +877,9 @@ public class OrdersManage extends UserInterface {
 
     }
     public static void delivery() {
+
         sort();
+
         long starteddelivery;
         long currenttime;
         long finishtime;
@@ -807,29 +889,38 @@ public class OrdersManage extends UserInterface {
                 PersonelManage.listaDostawcow.get(i).ordersToDelivery =
                         (ArrayList<Order>) PersonelManage.listaDostawcow.get(i).ordersToDelivery.stream()
                                 .sorted(Comparator.comparing
-                                        (Order -> Order.getDaty().get(Status.FINISHEDCOOKING.toString()).getTime()))
+                                        (Order -> Order.getDaty().get(Status.FINISHED_COOKING_DATE.toString()).getTime()))
                                 .collect(Collectors.toList());
 
-                if (PersonelManage.listaDostawcow.get(i).ordersToDelivery.get(0).getDaty()
-                        .get(Status.STARTEDDELIVERING.toString()) == null) {
-
-                    if (lastOrderDelivered != 0) {
-
-                        starteddelivery = lastOrderDelivered;
+                if (lastOrderDelivered != 0) {
+                    if (lastOrderDelivered <
+                            PersonelManage.listaDostawcow.get(i).ordersToDelivery.get(0).getDaty()
+                                    .get(Status.FINISHED_COOKING_DATE.toString()).getTime()) {
 
                         PersonelManage.listaDostawcow.get(i).ordersToDelivery.get(0)
-                                .getDaty().put(Status.STARTEDDELIVERING.toString(),
-                                        new Date(starteddelivery));
+                                .getDaty().put(Status.STARTED_DELIVERY_DATE.toString(),
+                                        PersonelManage.listaDostawcow.get(i).ordersToDelivery.get(0)
+                                                .getDaty().get(Status.FINISHED_COOKING_DATE.toString()));
+
+                        starteddelivery = PersonelManage.listaDostawcow.get(i).ordersToDelivery.get(0)
+                                .getDaty().get(Status.FINISHED_COOKING_DATE.toString()).getTime();
+
                     } else {
-                        starteddelivery = new Date().getTime();
                         PersonelManage.listaDostawcow.get(i).ordersToDelivery.get(0)
-                                .getDaty().put(Status.STARTEDDELIVERING.toString(),
-                                        new Date());
+                                .getDaty().put(Status.STARTED_DELIVERY_DATE.toString(),
+                                        new Date(lastOrderDelivered));
+                        starteddelivery = lastOrderDelivered;
                     }
                 } else {
+                    PersonelManage.listaDostawcow.get(i).ordersToDelivery.get(0)
+                            .getDaty().put(Status.STARTED_DELIVERY_DATE.toString(),
+                                    PersonelManage.listaDostawcow.get(i).ordersToDelivery.get(0)
+                                            .getDaty().get(Status.FINISHED_COOKING_DATE.toString()));
+
                     starteddelivery = PersonelManage.listaDostawcow.get(i).ordersToDelivery.get(0)
-                            .getDaty().get(Status.STARTEDDELIVERING.toString()).getTime();
+                            .getDaty().get(Status.FINISHED_COOKING_DATE.toString()).getTime();
                 }
+
 
                 currenttime = new Date().getTime();
 
@@ -840,7 +931,7 @@ public class OrdersManage extends UserInterface {
 
                     /*napiwek*/
                     long totalTime = finishtime - PersonelManage.listaDostawcow.get(i).ordersToDelivery.get(0)
-                            .getDaty().get(Status.ORDERDATE.toString()).getTime();
+                            .getDaty().get(Status.ORDERED_DATE.toString()).getTime();
                     double totalprice = PersonelManage.listaDostawcow.get(i).ordersToDelivery
                             .get(0).getTotalPrice();
                     long fiftenmin = 900_000;
@@ -854,29 +945,33 @@ public class OrdersManage extends UserInterface {
                         System.out.println(PersonelManage.listaDostawcow.get(i).getTips());
                     }
 
+
+
                     PersonelManage.listaDostawcow.get(i).ordersToDelivery.get(0)
                             .setStatus(Status.DOSTARCZONE.toString());
+
                     PersonelManage.listaDostawcow.get(i).ordersToDelivery.get(0)
                             .setDeliveredDate(new Date(finishtime));
-                    PersonelManage.listaDostawcow.get(i).deliveredCountIncrease();
-                    completedOrders.add(PersonelManage.listaDostawcow.get(i).ordersToDelivery.get(0));
-                    PersonelManage.listaDostawcow.get(i).ordersToDelivery.remove(0);
-                    lastOrderDelivered = finishtime;
-                    sort();
 
-                    if (!PersonelManage.listaDostawcow.get(i).ordersToDelivery.isEmpty()) {
-                        PersonelManage.listaDostawcow.get(i).ordersToDelivery.get(0)
-                                .setStartingDelivery(new Date(finishtime));
-                        sort();
-                    }
+                    PersonelManage.listaDostawcow.get(i).deliveredCountIncrease();
+
+                    completedOrders.add(PersonelManage.listaDostawcow.get(i).ordersToDelivery.get(0));
+
+                    PersonelManage.listaDostawcow.get(i).ordersToDelivery.remove(0);
+
+                    lastOrderDelivered = finishtime;
+                    startProcess();
+
                 }
 
             }
         }
     }
     public static void place() {
+
         sort();
-        long czasObslugi = 1000;
+
+        long czasObslugi = 5000;
 
         long starteddelivery;
         long currenttime;
@@ -890,30 +985,39 @@ public class OrdersManage extends UserInterface {
                 PersonelManage.listaKelnerow.get(i).ordersToPlace =
                         (ArrayList<Order>) PersonelManage.listaKelnerow.get(i).ordersToPlace.stream()
                                 .sorted(Comparator.comparing
-                                        (Order -> Order.getDaty().get(Status.FINISHEDCOOKING.toString()).getTime()))
+                                        (Order -> Order.getDaty().get(Status.FINISHED_COOKING_DATE.toString()).getTime()))
                                 .collect(Collectors.toList());
 
 
-                if (PersonelManage.listaKelnerow.get(i).ordersToPlace.get(0).getDaty()
-                        .get(Status.STARTEDDELIVERING.toString()) == null) {
-
-                    if (lastOrderPlaced != 0) {
-
-                        starteddelivery = lastOrderPlaced;
+                if (lastOrderPlaced != 0) {
+                    if (lastOrderPlaced <
+                            PersonelManage.listaKelnerow.get(i).ordersToPlace.get(0).getDaty()
+                                    .get(Status.FINISHED_COOKING_DATE.toString()).getTime()) {
 
                         PersonelManage.listaKelnerow.get(i).ordersToPlace.get(0)
-                                .getDaty().put(Status.STARTEDDELIVERING.toString(),
-                                        new Date(starteddelivery));
+                                .getDaty().put(Status.STARTED_DELIVERY_DATE.toString(),
+                                        PersonelManage.listaKelnerow.get(i).ordersToPlace.get(0)
+                                                .getDaty().get(Status.FINISHED_COOKING_DATE.toString()));
+
+                        starteddelivery = PersonelManage.listaKelnerow.get(i).ordersToPlace.get(0)
+                                .getDaty().get(Status.FINISHED_COOKING_DATE.toString()).getTime();
+
                     } else {
-                        starteddelivery = new Date().getTime();
                         PersonelManage.listaKelnerow.get(i).ordersToPlace.get(0)
-                                .getDaty().put(Status.STARTEDDELIVERING.toString(),
-                                        new Date());
+                                .getDaty().put(Status.STARTED_DELIVERY_DATE.toString(),
+                                        new Date(lastOrderPlaced));
+                        starteddelivery = lastOrderPlaced;
                     }
                 } else {
+                    PersonelManage.listaKelnerow.get(i).ordersToPlace.get(0)
+                            .getDaty().put(Status.STARTED_DELIVERY_DATE.toString(),
+                                    PersonelManage.listaKelnerow.get(i).ordersToPlace.get(0)
+                                            .getDaty().get(Status.FINISHED_COOKING_DATE.toString()));
+
                     starteddelivery = PersonelManage.listaKelnerow.get(i).ordersToPlace.get(0)
-                            .getDaty().get(Status.STARTEDDELIVERING.toString()).getTime();
+                            .getDaty().get(Status.FINISHED_COOKING_DATE.toString()).getTime();
                 }
+
 
                 currenttime = new Date().getTime();
 
@@ -923,7 +1027,7 @@ public class OrdersManage extends UserInterface {
 
                     /*Napiwek*/
                     long totalTime = finishtime - PersonelManage.listaKelnerow.get(i).ordersToPlace.get(0)
-                            .getDaty().get(Status.ORDERDATE.toString()).getTime();
+                            .getDaty().get(Status.ORDERED_DATE.toString()).getTime();
                     double totalprice = PersonelManage.listaKelnerow.get(i).ordersToPlace
                             .get(0).getTotalPrice();
                     long fiftenmin = 900_000;
@@ -938,24 +1042,19 @@ public class OrdersManage extends UserInterface {
 
 
                     PersonelManage.listaKelnerow.get(i).ordersToPlace.get(0)
-                            .setStatus(Status.DOSTARCZONE.toString());
-
-                    PersonelManage.listaKelnerow.get(i).ordersToPlace.get(0)
                             .setDeliveredDate(new Date(finishtime));
+                    PersonelManage.listaKelnerow.get(i).ordersToPlace.get(0)
+                                    .setStatus(Status.DOSTARCZONE.toString());
 
                     PersonelManage.listaKelnerow.get(i).deliveredCountIncrease();
-
                     completedOrders.add(PersonelManage.listaKelnerow.get(i).ordersToPlace.get(0));
 
                     PersonelManage.listaKelnerow.get(i).ordersToPlace.remove(0);
-                    lastOrderPlaced = finishtime;
-                    sort();
 
-                    if (!PersonelManage.listaKelnerow.get(i).ordersToPlace.isEmpty()) {
-                        PersonelManage.listaKelnerow.get(i).ordersToPlace.get(0)
-                                .setStartingDelivery(new Date(finishtime));
-                        sort();
-                    }
+                    lastOrderPlaced = finishtime;
+
+                    startProcess();
+
                 }
 
             }
@@ -990,13 +1089,14 @@ public class OrdersManage extends UserInterface {
             this.daty = new HashMap<>();
             this.totalPrice = totalprice;
 
-            daty.put(Status.ORDERDATE.toString(), orderDate);
+            daty.put(Status.ORDERED_DATE.toString(), orderDate);
 
         }
 
         public HashMap<String, Date> getDaty() {
             return daty;
         }
+        public long cookedtime;
 
         public int getId() {
             return id;
@@ -1011,24 +1111,32 @@ public class OrdersManage extends UserInterface {
         }
 
         public void setCookedDate(Date date) {
-            daty.put(Status.FINISHEDCOOKING.toString(), date);
+            daty.put(Status.FINISHED_COOKING_DATE.toString(), date);
         }
 
 
         public void setSTARTEDCOOKING(Date date) {
-            daty.put(Status.STARTEDCOOKING.toString(), date);
+            daty.put(Status.STARTED_COOKING_DATE.toString(), date);
         }
         public void setDeliveredDate(Date date) {
-            daty.put(Status.DELIVEREDDATE.toString(), date);
+            daty.put(Status.FINISHED_DELIVERY_DATE.toString(), date);
         }
         public void setStartingDelivery(Date date) {
-            daty.put(Status.STARTEDDELIVERING.toString(), date);
+            daty.put(Status.STARTED_DELIVERY_DATE.toString(), date);
         }
 
 
 
         public void setStatus(String status) {
             this.status = status;
+        }
+
+        public void setCookedtime(long cookedtime) {
+            this.cookedtime = cookedtime;
+        }
+
+        public long getCookedtime() {
+            return cookedtime;
         }
 
         public Customer getCustomer() {

@@ -6,13 +6,11 @@ import DataTypes.Person;
 public class Customer extends Person {
 
 
-    private boolean isDelivery;
-    private Address address;
-    private int table;
+    private final Address address;
+    private final int table;
 
-    public Customer(String name, String phone, boolean isDelivery, Address address, int table) {
+    public Customer(String name, String phone, Address address, int table) {
         super(name, phone);
-        this.isDelivery = isDelivery;
         this.address = address;
         this.table = table;
     }
@@ -21,9 +19,6 @@ public class Customer extends Person {
         return table;
     }
 
-    public boolean isDelivery() {
-        return isDelivery;
-    }
     public Address getAddress() {
         return address;
     }

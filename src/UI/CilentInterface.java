@@ -16,7 +16,8 @@ public class CilentInterface extends UserInterface{
                 ".----------------------------.\n" +
                 "| #1 Zarezerwuj stolik       |\n" +
                 "| #2 Zamow z dostawa do domu |\n" +
-                "| #3 Pokaz menu              |\n" +
+                "| #3 Losowe zamowienie       |\n" +
+                "| #4 Pokaz menu              |\n" +
                 "| #0 Cofnij                  |\n" +
                 "'----------------------------'\n");
 
@@ -41,6 +42,11 @@ public class CilentInterface extends UserInterface{
                     break;
 
                 case 3:
+                    ordersManage.randomOrder();
+                    pressAnyKeyToContinue();
+                    jestemKlientem();
+                    break;
+                case 4:
                     menuManage.printMenu();
                     pressAnyKeyToContinue();
                     jestemKlientem();

@@ -8,7 +8,6 @@ import java.util.ArrayList;
 public class DeliveryMan extends Person.Employee {
 
     private double tips = 0;
-    private boolean isAvalible;
     private int deliveredCount = 0;
     public ArrayList <OrdersManage.Order> ordersToDelivery;
 

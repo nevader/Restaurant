@@ -41,7 +41,7 @@ public class StartInterface extends UserInterface{
                     break;
 
                 case 2:
-                    menagerInterface.manageRestaurant();
+                    menagerInterface.zarzadzajRestauracja();
                     spacing();
                     ekranPowitalny();
                     break;

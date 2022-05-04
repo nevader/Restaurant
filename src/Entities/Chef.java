@@ -8,6 +8,4 @@ public class Chef extends Person.Employee {
         super(name, phone);
     }
 
-
-
 }

@@ -2,18 +2,18 @@ package Enums;
 
 public enum Status {
     PRZYJETE(1),
-    GOTOWE(3),
-    PRZEDAWNIONE(10),
-    ANULOWANE(11),
-    DOSTARCZONE(4),
-    WYJSCIE(20),
+    GOTOWE(2),
+    DOSTARCZONE(3),
+    PRZEDAWNIONE(4),
+    ANULOWANE(5),
+    WYJSCIE(6),
 
     /*godziny*/
-    ORDERDATE(5),
-    STARTEDCOOKING(6),
-    FINISHEDCOOKING(7),
-    STARTEDDELIVERING(8),
-    DELIVEREDDATE(9);
+    ORDERED_DATE(7),
+    STARTED_COOKING_DATE(8),
+    FINISHED_COOKING_DATE(9),
+    STARTED_DELIVERY_DATE(10),
+    FINISHED_DELIVERY_DATE(11);
 
     public final int status;
 

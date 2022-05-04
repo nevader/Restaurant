@@ -9,7 +9,7 @@ import java.security.spec.RSAOtherPrimeInfo;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public abstract class UserInterface {
+public class UserInterface {
 
     public boolean flag;
     public int userChoice;
